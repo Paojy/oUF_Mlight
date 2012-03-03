@@ -1,0 +1,18 @@
+## Interface: 40200
+## Title: oUF_Mlight
+## Author: Paojy
+## Version: 1.0
+## Dependencies: oUF
+## OptionalDeps: oUF_HealComm, oUF_boring_totembar, oUF_BarFader
+## Credits: Monolit,Zork,Freebaser,Dawn,Coolkids,Loshine
+
+cfg.lua
+tags.lua
+lib.lua
+core.lua
+
+modules\oUF_DebuffHighlight.lua
+modules\Smooth.lua
+modules\indicators.lua
+modules\raidDebuffs.lua
+modules\range.lua
