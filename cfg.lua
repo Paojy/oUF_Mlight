@@ -90,7 +90,7 @@
   cfg.width = 100 									-- raid unit width宽
   cfg.height = 26 									-- raid unit height高
   cfg.spacing = 5 									-- spacing between units间隙
-  cfg.colspacing = 12                               -- spacing between partys间隙
+  cfg.colspacing = 5                               -- spacing between partys间隙
   cfg.namelength = 4 								-- number of letters to display名字长度
   cfg.gridfontsize = 12								-- font size字号
   cfg.showRaidDebuffs = true
@@ -132,7 +132,7 @@
   cfg.sp3 = "|cff85419cA B C|r"
   -----------------------
   
---连击点--combo points
+--连击点--combo points --checked
     cfg.combop = {"CENTER",UIParent,"BOTTOM",10,280}--position
     cfg.combofont = 25 --大小（字号）fontsize
 	
@@ -145,7 +145,8 @@
   -----------------------
 
   -- my config 
-  if GetUnitName("player") == "月光小泡泡" then
+  if GetUnitName("player") == "伤心蓝" then
+    cfg.cbenabled = false --enable all the castbars
   end
   -----------------------------
   -- HANDOVER

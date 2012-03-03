@@ -545,7 +545,7 @@
       f.Runes = CreateFrame("Frame", nil, f)
       for i = 1, 6 do
         r = CreateFrame("StatusBar", f:GetName().."_Runes"..i, f)
-        r:SetSize(f.width/6, f.height/3)
+		r:SetSize(f.width/6, f.height/3)
         if (i == 1) then
           r:SetPoint(unpack(cfg.runesp))
         else
@@ -906,16 +906,16 @@ end
 lib.healcomm = function(self, unit)
 if cfg.HealMode then
 		local mhpb = CreateFrame('StatusBar', nil, self.Health)
-		mhpb:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT', 0, 0)
-		mhpb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMLEFT', 0, 0)
-		mhpb:SetWidth(65)
+-		mhpb:SetPoint('TOPLEFT', self.Health:GetStatusBarTexture(), 'TOPLEFT', 0, 0)
+-		mhpb:SetPoint('BOTTOMLEFT', self.Health:GetStatusBarTexture(), 'BOTTOMLEFT', 0, 0)
+-		mhpb:SetWidth(65)
 		mhpb:SetStatusBarTexture(cfg.statusbar_texture)
 		mhpb:SetStatusBarColor(0, 1, 0.5, 0.25)
 
 		local ohpb = CreateFrame('StatusBar', nil, self.Health)
-		ohpb:SetPoint('TOPLEFT', mhpb:GetStatusBarTexture(), 'TOPLEFT', 0, 0)
-		ohpb:SetPoint('BOTTOMLEFT', mhpb:GetStatusBarTexture(), 'BOTTOMLEFT', 0, 0)
-		ohpb:SetWidth(65)
+-		ohpb:SetPoint('TOPLEFT', mhpb:GetStatusBarTexture(), 'TOPLEFT', 0, 0)
+-		ohpb:SetPoint('BOTTOMLEFT', mhpb:GetStatusBarTexture(), 'BOTTOMLEFT', 0, 0)
+-		ohpb:SetWidth(65)
 		ohpb:SetStatusBarTexture(cfg.statusbar_texture)
 		ohpb:SetStatusBarColor(0, 1, 0, 0.25)
 
