@@ -13,8 +13,8 @@ cfg.buttonTex = cfg.mediaPath.."buttontex"
 cfg.fontsize = 12
 
 -- color mode
--- true: health colored based on class/disable to make health colored based on percentage
--- false: power colored based on power type/disable to make power colored based on class
+-- health colored based on class/disable to make health colored based on percentage
+-- power colored based on power type/disable to make power colored based on class
 cfg.classcolormode = true
 
 -- postion (type /mhelp to help you move it)
@@ -58,7 +58,7 @@ cfg.spp = {"CENTER",UIParent,"BOTTOM",0,200}
 cfg.spfontsize = 25 --fontsize
 
 -- combo points
-cfg.combop = {"CENTER",UIParent,"BOTTOM",10,200}--position
+cfg.combop = {"TOP",UIParent,"BOTTOM",10,-200}--position
 cfg.combofontsize = 25 --fontsize
 
 -- show/hide unit
@@ -84,11 +84,13 @@ cfg.dpsraidheight, cfg.dpsraidwidth = 15, 70
 ---------------------------------------------------------------------------------------
 -------------------[[        My         Config        ]]------------------------------- 
 ---------------------------------------------------------------------------------------
-  if GetUnitName("player") == "伤心蓝" or GetUnitName("player") == "Scarlett" then
-   cfg.castbars = true
-   cfg.font = "Fonts\\font.TTF"
-   end
+if GetUnitName("player") == "伤心蓝" or GetUnitName("player") == "Scarlett" then
+
+end
   
+if IsAddOnLoaded("Aurora") then
+cfg.font = GameFontHighlight:GetFont()
+end
 ---------------------------------------------------------------------------------------
 -------------------[[        Config        End        ]]-------------------------------  
 ---------------------------------------------------------------------------------------

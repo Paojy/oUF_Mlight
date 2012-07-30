@@ -383,23 +383,7 @@ local castbar = function(self, unit)
         self.Castbar = cb
     end
 end
---========================--
--- Check holypower and chi
---========================--
---[[
-local powermax
-local function checkmp()
-if event == 'UNIT_MAXPOWER' then
-powermax = UnitPowerMax('player', 12)
---print(powermax)
-return powermax
-end
-end
 
-local checkmaxpower = CreateFrame"Frame"
-checkmaxpower:SetScript("OnEvent", checkmp)
-checkmaxpower:RegisterEvent('UNIT_MAXPOWER')
-]]--
 --========================--
 --  Shared
 --========================--
@@ -424,17 +408,17 @@ local UpdateHealth = function(self, event, unit)
 			if cfg.classcolormode then
 				r, g, b = unpack(self.colors.class[class])
 			else
-				r, g, b = self.ColorGradient(perc, unpack(self.colors.smooth))
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
 			end
 		elseif(UnitIsPlayer(unit)) then
 			local _, class = UnitClass(unit)
 			if cfg.classcolormode then
 				if class then r, g, b = unpack(self.colors.class[class]) else r, g, b = 1, 1, 1 end
 			else
-				r, g, b = self.ColorGradient(perc, unpack(self.colors.smooth))
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
 			end
 		elseif(unit and unit:find("boss%d")) then
-			r, g, b = self.ColorGradient(perc, unpack(self.colors.smooth))
+			r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
 		elseif unit then
 			r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
 		end
@@ -446,7 +430,7 @@ end
 ns.updatehealthcolor = UpdateHealth
 
 local func = function(self, unit)
-
+	
     self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
     self:RegisterForClicks"AnyUp"
@@ -606,15 +590,15 @@ local func = function(self, unit)
         castbar(self, unit)
     end
 	
-
-    self.BarFaderMinAlpha = 0.0001 -- set to 0 bring errors during combat. ?_?
+    self.FadeMinAlpha = 0
+	self.FadeInSmooth = 0.4
+	self.FadeOutSmooth = 1.5
     self.FadeCasting = true
     self.FadeCombat = true
     self.FadeTarget = true
     self.FadeHealth = true
     self.FadePower = true
     self.FadeHover = true
-
 
 end
 
@@ -625,7 +609,6 @@ local UnitSpecific = {
     --========================--
     player = function(self, ...)
         func(self, ...)
-		
         local _, class = UnitClass("player")
 		
         -- Runes, Shards, HolyPower --
@@ -754,8 +737,8 @@ local UnitSpecific = {
         end
 		
 		-- resting Zzz ---
-		local ri = createFont(self, "OVERLAY", cfg.font, 10, "OUTLINE", nil, nil, nil)
-		ri:SetPoint("CENTER", self, "CENTER",0,-2)
+		local ri = createFont(self.Health, "OVERLAY", cfg.font, 10, "OUTLINE", nil, nil, nil)
+		ri:SetPoint("CENTER", self.Health, "CENTER",0,-2)
 		ri:SetText("|cff8AFF30Zzz|r")
 		self.Resting = ri
 		
