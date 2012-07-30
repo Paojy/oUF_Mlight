@@ -404,23 +404,31 @@ local UpdateHealth = function(self, event, unit)
 		if(UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) or not UnitIsConnected(unit)) then
 			r, g, b = .6, .6, .6
 		elseif(unit == "pet") then
-			local _, class = UnitClass("player")
+			local _, playerclass = UnitClass("player")
 			if cfg.classcolormode then
-				r, g, b = unpack(self.colors.class[class])
+				r, g, b = unpack(self.colors.class[playerclass])
 			else
 				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
 			end
 		elseif(UnitIsPlayer(unit)) then
-			local _, class = UnitClass(unit)
+			local _, unitclass = UnitClass(unit)
 			if cfg.classcolormode then
-				if class then r, g, b = unpack(self.colors.class[class]) else r, g, b = 1, 1, 1 end
+				if unitclass then r, g, b = unpack(self.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
 			else
 				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
 			end
 		elseif(unit and unit:find("boss%d")) then
-			r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
+			if cfg.classcolormode then
+				r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
+			else
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
+			end
 		elseif unit then
-			r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
+			if cfg.classcolormode then
+				r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
+			else
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
+			end
 		end
 
 		self.Health:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)

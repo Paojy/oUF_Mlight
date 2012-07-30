@@ -81,16 +81,16 @@ end
 
 oUF.Tags.Methods['Mlight:hp']  = function(u) 
     local min, max = UnitHealth(u), UnitHealthMax(u)
-	--if min~=max and min > 0 then 
+	if min~=max and min > 0 then 
     return siValue(min).." | "..math.floor(min/max*100+.5).."%"
-	--end
+	end
 end
 oUF.Tags.Events['Mlight:hp'] = 'UNIT_HEALTH'
 
 oUF.Tags.Methods['Mlight:pp'] = function(u) 
 	local min, max = UnitPower(u), UnitPowerMax(u)
 	
-    --if min~=max and min > 0 then
+    if min~=max and min > 0 then
         local _, str, r, g, b = UnitPowerType(u)
         local t = oUF.colors.power[str]
 
@@ -99,7 +99,7 @@ oUF.Tags.Methods['Mlight:pp'] = function(u)
         end
 
         return hex(r, g, b)..siValue(min).."|r"
-   -- end
+    end
 end
 oUF.Tags.Events['Mlight:pp'] = 'UNIT_POWER'
 
