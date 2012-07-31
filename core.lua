@@ -108,6 +108,7 @@ local createBackdrop = function(parent, anchor, a, m, c)
 		frame:SetBackdropBorderColor(0, 0, 0)
 	end
 	
+	parent.backdrop = frame
     return frame
 end
 ns.backdrop = createBackdrop
@@ -725,7 +726,7 @@ local UnitSpecific = {
             Auras:SetWidth(cfg.width)
             Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
             Auras.spacing = 6
-            Auras.gap = true
+            Auras.gap = false
             Auras.size = cfg.height+2
             Auras.initialAnchor = "BOTTOMLEFT"
 
@@ -752,7 +753,7 @@ local UnitSpecific = {
             Auras:SetWidth(cfg.width)
             Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
             Auras.spacing = 6
-            Auras.gap = true
+            Auras.gap = false
             Auras.size = cfg.height+2
             Auras.initialAnchor = "BOTTOMLEFT"
 
@@ -828,7 +829,7 @@ local UnitSpecific = {
     Auras:SetWidth(cfg.width)
     Auras:SetPoint("RIGHT", self, "LEFT", -5, 0)
     Auras.spacing = 6
-    Auras.gap = true
+    Auras.gap = false
     Auras.size = cfg.height
 	Auras.initialAnchor = "BOTTOMRIGHT"
 	Auras["growth-x"] = "LEFT"

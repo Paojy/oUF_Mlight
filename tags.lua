@@ -156,33 +156,18 @@ oUF.Tags.Methods['Mlight:altpower'] = function(u)
 end
 oUF.Tags.Events['Mlight:altpower'] = "UNIT_POWER UNIT_MAXPOWER"
 
--------------[[ class specific tags ]]-------------
--- combo points
-oUF.Tags.Methods['Mlight:cp'] = function(u)
-	local cp = UnitExists("vehicle") and GetComboPoints("vehicle", "target") or GetComboPoints("player", "target")
-	if cp == 1 then		return "|cff8AFF30C|r" 
-	elseif cp == 2 then	return "|cff8AFF30C C|r"
-	elseif cp == 3 then	return "|cff8AFF30C C|r |cffFFF130C|r" 
-	elseif cp == 4 then	return "|cff8AFF30C C|r |cffFFF130C C|r" 
-	elseif cp == 5 then	return "|cff8AFF30C C|r |cffFFF130C C|r |cffFF0000C|r" 
-	end
-end
-oUF.Tags.Events['Mlight:cp'] = 'UNIT_COMBO_POINTS'
-
-
-
 --------------[[     raid     ]]-------------------
 oUF.Tags.Methods['Mlight:raidinfo'] = function(u)
-    local _, class = UnitClass(u)
-
-    if class then
-        if UnitIsDead(u) then
-            return hex(oUF.colors.class[class]).."RIP|r"
-        elseif UnitIsGhost(u) then
-            return hex(oUF.colors.class[class]).."Gho|r"
-        elseif not UnitIsConnected(u) then
-            return hex(oUF.colors.class[class]).."D/C|r"
-        end
+	local ripcolor = {r = 1, g = 0, b = 0}
+	local ghocolor = {r = 0.5, g = 0.5, b = 0.5}
+	
+    if UnitIsDead(u) then
+        return hex(ripcolor).."b|r"
+    elseif UnitIsGhost(u) then
+        return hex(ghocolor).."z|r"
+    elseif not UnitIsConnected(u) then
+        return hex(ghocolor).."U|r"
     end
+
 end
 oUF.Tags.Events['Mlight:raidinfo'] = 'UNIT_HEALTH UNIT_CONNECTION'

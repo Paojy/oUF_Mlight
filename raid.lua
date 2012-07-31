@@ -7,6 +7,7 @@ local mediaPath = cfg.mediaPath
 local texture = cfg.texture
 local glowTex = cfg.glowTex
 local font, fontsize = cfg.font, cfg.raidfontsize
+local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
 local myclass = select(2, UnitClass("player"))
 local Role
 
@@ -74,14 +75,27 @@ local func = function(self, unit)
 	
     local info = hp:CreateFontString(nil, "OVERLAY")
     info:SetPoint("TOP", hp, "TOP", 0, -2)
-    info:SetFont(font, fontsize, "OUTLINE")
+    info:SetFont(symbols, fontsize +3, "OUTLINE")
     info:SetShadowOffset(0, 0)
-    info:SetTextColor(1, 1, 1)
     self:Tag(info, '[Mlight:raidinfo]')
+	
+	local leader = hp:CreateTexture(nil, "OVERLAY")
+    leader:SetSize(12, 12)
+    leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+    self.Leader = leader
+
+    local masterlooter = hp:CreateTexture(nil, 'OVERLAY')
+    masterlooter:SetSize(12, 12)
+    masterlooter:SetPoint('LEFT', leader, 'RIGHT')
+    self.MasterLooter = masterlooter
+
+    local LFDRole = hp:CreateTexture(nil, 'OVERLAY')
+    LFDRole:SetSize(12, 12)
+    LFDRole:SetPoint('LEFT', masterlooter, 'RIGHT')
+    self.LFDRole = LFDRole
 	
 	local raidname = hp:CreateFontString(nil, "OVERLAY")
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
-
     raidname:SetFont(font, fontsize, "OUTLINE")
     raidname:SetShadowOffset(0, 0)
 	if not cfg.classcolormode then
@@ -182,7 +196,22 @@ local dfunc = function(self, unit)
     info:SetShadowOffset(0, 0)
     info:SetTextColor(1, 1, 1)
     self:Tag(info, '[Mlight:raidinfo]')
-	
+
+	local leader = hp:CreateTexture(nil, "OVERLAY")
+    leader:SetSize(12, 12)
+    leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+    self.Leader = leader
+
+    local masterlooter = hp:CreateTexture(nil, 'OVERLAY')
+    masterlooter:SetSize(12, 12)
+    masterlooter:SetPoint('LEFT', leader, 'RIGHT')
+    self.MasterLooter = masterlooter
+
+    local LFDRole = hp:CreateTexture(nil, 'OVERLAY')
+    LFDRole:SetSize(12, 12)
+    LFDRole:SetPoint('LEFT', masterlooter, 'RIGHT')
+    self.LFDRole = LFDRole
+		
 	local raidname = hp:CreateFontString(nil, "OVERLAY")
 	raidname:SetPoint("BOTTOMLEFT", hp, "BOTTOMRIGHT", 5, 0)
 

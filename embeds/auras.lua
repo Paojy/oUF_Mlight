@@ -160,7 +160,6 @@ local CustomFilter = function(icons, ...)
     local _, icon, name, _, _, _, dtype, _, _, caster, spellID = ...
 
     icon.asc = false
-    icon.buff = false
     icon.priority = 0
 
     if ns.auras.ascending[spellID] or ns.auras.ascending[name] then
@@ -214,12 +213,9 @@ local AuraTimer = function(self, elapsed)
     end
 end
 
-local buffcolor = { r = 0.0, g = 1.0, b = 1.0 }
-local updateDebuff = function(icon, texture, count, dtype, duration, expires, buff)
-    local color = buff and buffcolor or DebuffTypeColor[dtype] or DebuffTypeColor.none
-
+local updateDebuff = function( icon, texture, count, dtype, duration, expires)
+    local color = DebuffTypeColor[dtype] or DebuffTypeColor.none
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
-
     icon.icon:SetTexture(texture)
     icon.count:SetText((count > 1 and count))
 
@@ -241,7 +237,6 @@ local Update = function(self, event, unit)
     local hide = true
     local auras = self.MlightAuras
     local icon = auras.button
-
     local index = 1
     while true do
         local name, rank, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitDebuff(unit, index)
@@ -257,31 +252,6 @@ local Update = function(self, event, unit)
             else
                 if icon.priority > cur then
                     updateDebuff(icon, texture, count, dtype, duration, expires)
-                end
-            end
-
-            icon:Show()
-            hide = false
-        end
-
-        index = index + 1
-    end
-
-    index = 1
-    while true do
-        local name, rank, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitBuff(unit, index)
-        if not name then break end
-        
-        local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster, spellID)
-
-        if(show) and icon.buff then
-			--print(name)
-            if not cur then
-                cur = icon.priority
-                updateDebuff(icon, texture, count, dtype, duration, expires, true)
-            else
-                if icon.priority > cur then
-                    updateDebuff(icon, texture, count, dtype, duration, expires, true)
                 end
             end
 
