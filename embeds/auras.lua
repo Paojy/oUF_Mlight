@@ -213,9 +213,14 @@ local AuraTimer = function(self, elapsed)
     end
 end
 
-local updateDebuff = function( icon, texture, count, dtype, duration, expires)
+local updateDebuff = function(backdrop, icon, texture, count, dtype, duration, expires)
     local color = DebuffTypeColor[dtype] or DebuffTypeColor.none
+
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
+    if dispellist[dtype] then
+	backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+	end
+	
     icon.icon:SetTexture(texture)
     icon.count:SetText((count > 1 and count))
 
@@ -237,6 +242,8 @@ local Update = function(self, event, unit)
     local hide = true
     local auras = self.MlightAuras
     local icon = auras.button
+	local backdrop = self.backdrop
+	
     local index = 1
     while true do
         local name, rank, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitDebuff(unit, index)
@@ -248,10 +255,10 @@ local Update = function(self, event, unit)
             --print(name)
             if not cur then
                 cur = icon.priority
-                updateDebuff(icon, texture, count, dtype, duration, expires)
+                updateDebuff(backdrop, icon, texture, count, dtype, duration, expires)
             else
                 if icon.priority > cur then
-                    updateDebuff(icon, texture, count, dtype, duration, expires)
+                    updateDebuff(backdrop, icon, texture, count, dtype, duration, expires)
                 end
             end
 
