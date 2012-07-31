@@ -97,13 +97,20 @@ local func = function(self, unit)
 
 	-- Auras
     local auras = CreateFrame("Frame", nil, self)
-    auras:SetSize(16, 16)
-    auras:SetPoint("LEFT", hp, "LEFT", 5, 0)
+    auras:SetSize(20, 20)
+    auras:SetPoint("LEFT", hp, "LEFT", 15, 0)
 	auras.tfontsize = 13
 	auras.cfontsize = 8
 	self.MlightAuras = auras
 	
-
+	-- Tankbuff
+    local tankbuff = CreateFrame("Frame", nil, self)
+    tankbuff:SetSize(20, 20)
+    tankbuff:SetPoint("LEFT", auras, "RIGHT", 5, 0)
+	tankbuff.tfontsize = 13
+	tankbuff.cfontsize = 8
+	self.MlightTankbuff = tankbuff
+	
 	-- Indicators
 	self.MlightIndicators = true
 	
@@ -170,8 +177,8 @@ local dfunc = function(self, unit)
 	self.gradient = gradient
 	
     local info = hp:CreateFontString(nil, "OVERLAY")
-    info:SetPoint("TOP")
-    info:SetFont(font, fontsize-3, "OUTLINE")
+    info:SetPoint("LEFT", hp, "LEFT", 5, 0)
+    info:SetFont(font, fontsize, "OUTLINE")
     info:SetShadowOffset(0, 0)
     info:SetTextColor(1, 1, 1)
     self:Tag(info, '[Mlight:raidinfo]')

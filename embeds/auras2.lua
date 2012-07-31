@@ -167,20 +167,13 @@ local CustomFilter = function(icons, ...)
         icon.asc = true
     end
 
-    if instDebuffs[spellID] then
-        icon.priority = instDebuffs[spellID]
+	if ns.auras.buffs[spellID] then
+        icon.priority = ns.auras.buffs[spellID]
+        icon.buff = true
         return true
-    elseif ns.auras.debuffs[spellID] then
-        icon.priority = ns.auras.debuffs[spellID]
-        return true
-    elseif instDebuffs[name] then
-        icon.priority = instDebuffs[name]
-        return true
-    elseif ns.auras.debuffs[name] then
-        icon.priority = ns.auras.debuffs[name]
-        return true
-    elseif dispellist[dtype] then
-        icon.priority = dispelPriority[dtype]
+    elseif ns.auras.buffs[name] then
+        icon.priority = ns.auras.buffs[name]
+        icon.buff = true
         return true
     end
 end
@@ -239,7 +232,7 @@ local Update = function(self, event, unit)
 
     local cur
     local hide = true
-    local auras = self.MlightAuras
+    local auras = self.MlightTankbuff
     local icon = auras.button
 
     local index = 1
@@ -298,7 +291,7 @@ local Update = function(self, event, unit)
 end
 
 local Enable = function(self)
-    local auras = self.MlightAuras
+    local auras = self.MlightTankbuff
 
     if(auras) then
         auras.button = CreateAuraIcon(auras)
@@ -308,11 +301,11 @@ local Enable = function(self)
 end
 
 local Disable = function(self)
-    local auras = self.MlightAuras
+    local auras = self.MlightTankbuff
 
     if(auras) then
         self:UnregisterEvent("UNIT_AURA", Update)
     end
 end
 
-oUF:AddElement('MlightAuras', Update, Enable, Disable)
+oUF:AddElement('MlightTankbuff', Update, Enable, Disable)

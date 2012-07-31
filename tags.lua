@@ -169,27 +169,7 @@ oUF.Tags.Methods['Mlight:cp'] = function(u)
 end
 oUF.Tags.Events['Mlight:cp'] = 'UNIT_COMBO_POINTS'
 
--- holy power or soul shards
-oUF.Tags.Methods['Mlight:sp'] = function(u)
-	local _, class = UnitClass(u)
-	local SP, spcol = 0,{}
-	if class == "PALADIN" then
-		SP = UnitPower("player", 9)
-	elseif class == "WARLOCK" then
-		SP = UnitPower("player", 7)
-	elseif class == "MONK" then
-		SP = UnitPower("player", 12)
-	elseif class == "PRIEST" then
-		SP = UnitPower("player", 13)
-	end
-	if SP == 1 then return "|cff7D26CDC|r"
-	elseif SP == 2 then return "|cff9F79EEC C|r"
-	elseif SP == 3 then return "|cffEE7AE9C C C|r"
-	elseif SP == 4 then	return "|cffEE1289C C C C|r" 
-	elseif SP == 5 then	return "|cffEE0000C C C C C|r" 
-	end
-end
-oUF.Tags.Events['Mlight:sp'] = 'UNIT_POWER'
+
 
 --------------[[     raid     ]]-------------------
 oUF.Tags.Methods['Mlight:raidinfo'] = function(u)
