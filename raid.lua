@@ -73,8 +73,8 @@ local func = function(self, unit)
 	self.gradient = gradient
 	
     local info = hp:CreateFontString(nil, "OVERLAY")
-    info:SetPoint("TOP")
-    info:SetFont(font, fontsize-3, "OUTLINE")
+    info:SetPoint("TOP", hp, "TOP", 0, -2)
+    info:SetFont(font, fontsize, "OUTLINE")
     info:SetShadowOffset(0, 0)
     info:SetTextColor(1, 1, 1)
     self:Tag(info, '[Mlight:raidinfo]')
