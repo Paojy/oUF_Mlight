@@ -2,6 +2,7 @@ local ADDON_NAME, ns = ...
 local cfg = ns.cfg
 
 local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
+local aurasize = (cfg.width+6)/cfg.auraperrow-6
 
 local colors = setmetatable({
 	power = setmetatable({
@@ -107,8 +108,6 @@ local createBackdrop = function(parent, anchor, a, m, c)
 		frame:SetBackdropColor(.25, .25, .25, a)
 		frame:SetBackdropBorderColor(0, 0, 0)
 	end
-	
-	parent.backdrop = frame
     return frame
 end
 ns.backdrop = createBackdrop
@@ -217,8 +216,9 @@ local auraIcon = function(auras, button)
     auras.disableCooldown = true
 
     button.icon:SetTexCoord(.1, .9, .1, .9)
-    button.bg = createBackdrop(button, button,0,3)
-
+	local bg = createBackdrop(button, button,0,3)
+	button.bg = bg
+	
     if cfg.auraborders then
         auras.showDebuffType = true
         button.overlay:SetTexture(cfg.buttonTex)
@@ -257,11 +257,20 @@ do
         else
             icon.remaining:Hide()
         end
-
+		
+		if duration then
+		icon.bg:Show() -- if the aura is not a gap icon show it's bg
+		end
+		
         icon.duration = duration
         icon.expires = expirationTime
         icon:SetScript("OnUpdate", CreateAuraTimer)
     end
+end
+
+local PostUpdateGapIcon = function(self, unit, icon, visibleBuffs)
+	icon.bg:Hide()
+	icon.remaining:Hide()
 end
 
 local aurafilter = {
@@ -726,14 +735,16 @@ local UnitSpecific = {
             Auras:SetWidth(cfg.width)
             Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
             Auras.spacing = 6
-            Auras.gap = false
-            Auras.size = cfg.height+2
+            Auras.gap = true
+            Auras.size = aurasize
             Auras.initialAnchor = "BOTTOMLEFT"
 
             Auras.PostCreateIcon = auraIcon
             Auras.PostUpdateIcon = PostUpdateIcon
             Auras.CustomFilter = CustomFilter
             Auras.onlyShowPlayer = cfg.onlyShowPlayer
+			Auras.PostUpdateGapIcon = PostUpdateGapIcon
+			Auras.showStealableBuffs = true
 			
             self.Auras = Auras
             self.Auras.numDebuffs = 8
@@ -753,14 +764,16 @@ local UnitSpecific = {
             Auras:SetWidth(cfg.width)
             Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
             Auras.spacing = 6
-            Auras.gap = false
-            Auras.size = cfg.height+2
+            Auras.gap = true
+            Auras.size = aurasize
             Auras.initialAnchor = "BOTTOMLEFT"
 
             Auras.PostCreateIcon = auraIcon
             Auras.PostUpdateIcon = PostUpdateIcon
             Auras.CustomFilter = CustomFilter
-
+			Auras.PostUpdateGapIcon = PostUpdateGapIcon
+			Auras.showStealableBuffs = true
+			
             self.Auras = Auras
             self.Auras.numDebuffs = 8
             self.Auras.numBuffs = 16
@@ -787,7 +800,7 @@ local UnitSpecific = {
             debuffs:SetWidth(cfg.width)
             debuffs:SetPoint("RIGHT", self, "LEFT", -5, 0)
             debuffs.spacing = 6
-            debuffs.size = cfg.height
+            debuffs.size = aurasize
             debuffs.initialAnchor = "BOTTOMRIGHT"
 	        debuffs["growth-x"] = "LEFT"
             debuffs["growth-y"] = "UP"
@@ -829,8 +842,8 @@ local UnitSpecific = {
     Auras:SetWidth(cfg.width)
     Auras:SetPoint("RIGHT", self, "LEFT", -5, 0)
     Auras.spacing = 6
-    Auras.gap = false
-    Auras.size = cfg.height
+    Auras.gap = true
+    Auras.size = aurasize
 	Auras.initialAnchor = "BOTTOMRIGHT"
 	Auras["growth-x"] = "LEFT"
     Auras["growth-y"] = "UP"
@@ -839,7 +852,9 @@ local UnitSpecific = {
     Auras.PostUpdateIcon = PostUpdateIcon
     Auras.CustomFilter = CustomFilter
 	Auras.onlyShowPlayer = true
-
+	Auras.PostUpdateGapIcon = PostUpdateGapIcon
+	Auras.showStealableBuffs = true
+	
     self.Auras = Auras
     self.Auras.numDebuffs = 4
     self.Auras.numBuffs = 3

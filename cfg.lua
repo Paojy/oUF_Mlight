@@ -41,6 +41,7 @@ cfg.uninterruptable = {1, 0, 0, 0.1}
 -- auras
 cfg.auras = true  -- disable all auras
 cfg.auraborders = true -- auraborder colored based on debuff type
+cfg.auraperrow = 9 -- number of auras each row, this control the size of icon
 cfg.onlyShowPlayer = false -- only show player debuffs on target
 
 -- show/hide unit
