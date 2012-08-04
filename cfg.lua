@@ -15,7 +15,7 @@ cfg.fontsize = 12
 -- color mode
 -- health colored based on class/disable to make health colored based on percentage
 -- power colored based on power type/disable to make power colored based on class
-cfg.classcolormode = true
+cfg.classcolormode = false
 
 -- size
 cfg.height, cfg.width = 16, 230--height and width for player,focus and target
@@ -59,6 +59,8 @@ cfg.toggle = true
  -- healer mode(5*5)
 cfg.healerraidposition = {"TOPLEFT", "UIParent","CENTER", 150, -100}
 cfg.healerraidheight, cfg.healerraidwidth = 30, 90
+cfg.anchor = "TOP"
+cfg.partyanchor = "LEFT"
  -- dps/tank mode(1*25)
 cfg.dpsraidposition = {"TOPLEFT", UIParent, "TOPLEFT", 20, -168}
 cfg.dpsraidheight, cfg.dpsraidwidth = 15, 70
