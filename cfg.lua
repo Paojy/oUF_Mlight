@@ -15,7 +15,7 @@ cfg.fontsize = 12
 -- color mode
 -- health colored based on class/disable to make health colored based on percentage
 -- power colored based on power type/disable to make power colored based on class
-cfg.classcolormode = false
+cfg.classcolormode = true
 
 -- size
 cfg.height, cfg.width = 16, 230--height and width for player,focus and target
@@ -25,7 +25,7 @@ cfg.hpheight = .90 -- hpheight/unitheight
 
 -- postion
 cfg.playerpos = {"BOTTOM","UIParent","CENTER", 0, -135}
-cfg.petpos = {"BOTTOMRIGHT","UIParent","CENTER", -cfg.width/2 -10, -135}
+cfg.petpos = {"BOTTOMLEFT","UIParent","CENTER", cfg.width/2 +10, -135}
 cfg.targetpos = {"TOPLEFT","UIParent","CENTER", 150, -50}
 cfg.totpos = {"TOPLEFT","UIParent","CENTER", 150 +cfg.width +10, -50}
 cfg.focuspos = {"TOPLEFT","UIParent","CENTER", 150, 50}
@@ -60,7 +60,7 @@ cfg.toggle = true
 cfg.healerraidposition = {"TOPLEFT", "UIParent","CENTER", 150, -100}
 cfg.healerraidheight, cfg.healerraidwidth = 30, 90
  -- dps/tank mode(1*25)
-cfg.dpsraidposition = {"TOPLEFT", UIParent, "TOPLEFT", 18, -168}
+cfg.dpsraidposition = {"TOPLEFT", UIParent, "TOPLEFT", 20, -168}
 cfg.dpsraidheight, cfg.dpsraidwidth = 15, 70
 
 ---------------------------------------------------------------------------------------
@@ -70,13 +70,9 @@ if GetUnitName("player") == "伤心蓝" or GetUnitName("player") == "Scarlett" t
 
 end
   
-if IsAddOnLoaded("Aurora") then
+if IsAddOnLoaded("Aurora") and IsAddOnLoaded("aCore") then
 cfg.font = GameFontHighlight:GetFont()
-end
-
-if IsAddOnLoaded("aCore") then
-cfg.petpos = {"BOTTOMRIGHT","UIParent","BOTTOM", -180, 23}
-cfg.font = GameFontHighlight:GetFont()
+cfg.showsolo = false
 end
 ---------------------------------------------------------------------------------------
 -------------------[[        Config        End        ]]-------------------------------  
