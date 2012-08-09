@@ -7,6 +7,7 @@ local cfg = CreateFrame("Frame")
 -- media
 cfg.mediaPath = "Interface\\AddOns\\oUF_Mlight\\media\\"
 cfg.texture = "Interface\\Buttons\\WHITE8x8"
+cfg.highlighttexture = cfg.mediaPath.."highlight"
 cfg.font, cfg.fontflag = cfg.mediaPath.."font.TTF", "OUTLINE"--GameFontHighlight:GetFont(), "OUTLINE"
 cfg.glowTex = cfg.mediaPath.."grow"
 cfg.buttonTex = cfg.mediaPath.."buttontex"
@@ -20,6 +21,7 @@ cfg.classcolormode = false
 -- size
 cfg.height, cfg.width = 16, 230--height and width for player,focus and target
 cfg.width1 = 70 -- width for pet and tot
+cfg.width2 = 150 -- width for boss 1-5
 cfg.scale = 1.0
 cfg.hpheight = .90 -- hpheight/unitheight
 
@@ -61,6 +63,9 @@ cfg.healerraidposition = {"TOPLEFT", "UIParent","CENTER", 150, -100}
 cfg.healerraidheight, cfg.healerraidwidth = 30, 90
 cfg.anchor = "TOP"
 cfg.partyanchor = "LEFT"
+cfg.healprediction = true
+cfg.myhealpredictioncolor = { 110/255, 210/255, 0/255, 0.5}
+cfg.otherhealpredictioncolor = { 0/255, 110/255, 0/255, 0.5}
  -- dps/tank mode(1*25)
 cfg.dpsraidposition = {"TOPLEFT", UIParent, "TOPLEFT", 20, -168}
 cfg.dpsraidheight, cfg.dpsraidwidth = 15, 70
