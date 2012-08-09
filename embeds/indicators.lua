@@ -160,10 +160,10 @@ oUF.Tags.Methods['freebgrid:int'] = function(u) if not(UnitAura(u, GetSpellInfo(
 oUF.Tags.Events['freebgrid:int'] = "UNIT_AURA"
 
 -- Monk Œ‰…Æ
-oUF.Tags.Methods['mlight:zs'] = function(u) if UnitAura(u, GetSpellInfo(124081)) then return "|cff97FFFF"..x.."|r" end end -- Ï¯“‚÷È
-oUF.Tags.Events['mlight:zs'] = "UNIT_AURA"
+oUF.Tags.Methods['Mlight:zs'] = function(u) if UnitAura(u, GetSpellInfo(124081)) then return "|cff97FFFF"..x.."|r" end end -- Ï¯“‚÷È
+oUF.Tags.Events['Mlight:zs'] = "UNIT_AURA"
 
-oUF.Tags.Methods['mlight:remist'] = function(u) -- ∏¥À’÷ÆŒÌ –¶¡≥
+oUF.Tags.Methods['Mlight:remist'] = function(u) -- ∏¥À’÷ÆŒÌ –¶¡≥
     local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(115151))
     if(fromwho == "player") then
         local spellTimer = GetTime()-expirationTime
@@ -176,7 +176,7 @@ oUF.Tags.Methods['mlight:remist'] = function(u) -- ∏¥À’÷ÆŒÌ –¶¡≥
         end
     end
 end
-oUF.Tags.Events['mlight:remist'] = "UNIT_AURA"
+oUF.Tags.Events['Mlight:remist'] = "UNIT_AURA"
 
 classIndicators={
     ["DRUID"] = {
@@ -184,77 +184,77 @@ classIndicators={
         ["TR"] = "[freebgrid:motw]",
         ["BL"] = "[freebgrid:regrow][freebgrid:wg]",
         ["BR"] = "[freebgrid:lb]",
-        ["Cen"] = "",
+        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["PRIEST"] = {
         ["TL"] = "[freebgrid:rnw]",
         ["TR"] = "[freebgrid:fort]",
         ["BL"] = "[freebgrid:pws][freebgrid:ws][freebgrid:pwb]",
         ["BR"] = "[freebgrid:pom]",
-        ["Cen"] = "[freebgrid:rnwTime]",
+        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG][freebgrid:rnwTime]",
     },
     ["PALADIN"] = {
         ["TL"] = "[freebgrid:forbearance]",
         ["TR"] = "[freebgrid:motw][freebgrid:might]",
         ["BL"] = "",
         ["BR"] = "[freebgrid:beacon]",
-        ["Cen"] = "",
+        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["WARLOCK"] = {
         ["TL"] = "",
         ["TR"] = "[freebgrid:di]",
         ["BL"] = "",
         ["BR"] = "[freebgrid:ss]",
-        ["Cen"] = "",
+        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["WARRIOR"] = {
         ["TL"] = "",
         ["TR"] = "[freebgrid:stragi][freebgrid:fort]",
         ["BL"] = "",
         ["BR"] = "",
-        ["Cen"] = "",
+        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["DEATHKNIGHT"] = {
         ["TL"] = "",
         ["TR"] = "",
         ["BL"] = "",
         ["BR"] = "",
-        ["Cen"] = "",
+        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["SHAMAN"] = {
         ["TL"] = "[freebgrid:rip]",
         ["TR"] = "",
         ["BL"] = "",
         ["BR"] = "[freebgrid:earth]",
-        ["Cen"] = "[freebgrid:ripTime]",
+        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG][freebgrid:ripTime]",
     },
     ["HUNTER"] = {
         ["TL"] = "",
         ["TR"] = "",
         ["BL"] = "",
         ["BR"] = "",
-        ["Cen"] = "",
+        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["ROGUE"] = {
         ["TL"] = "",
         ["TR"] = "",
         ["BL"] = "",
         ["BR"] = "",
-        ["Cen"] = "",
+        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["MAGE"] = {
         ["TL"] = "",
         ["TR"] = "[freebgrid:int]",
         ["BL"] = "",
         ["BR"] = "",
-        ["Cen"] = "",
+        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
 	["MONK"] = {
-        ["TL"] = "[mlight:zs]",
+        ["TL"] = "[Mlight:zs]",
         ["TR"] = "[freebgrid:motw]",
         ["BL"] = "",
-        ["BR"] = "[mlight:remist]",
-        ["Cen"] = "",
+        ["BR"] = "[Mlight:remist]",
+        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
 }
 
