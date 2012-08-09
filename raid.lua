@@ -4,29 +4,99 @@ local cfg = ns.cfg
 if not cfg.enableraid then return end
 
 local texture = cfg.texture
-local font, fontsize = cfg.font, cfg.raidfontsize
+local font, fontflag = cfg.font, cfg.fontflag
+local fontsize = cfg.raidfontsize
 local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
 local myclass = select(2, UnitClass("player"))
-local Role
 
-CheckRole = function()
-	local role
-	local tree = GetSpecialization()
-	if ((myclass == "MONK" and tree == 2) or (myclass == "PRIEST" and (tree == 1 or tree ==2)) or (myclass == "PALADIN" and tree == 1)) or (myclass == "DRUID" and tree == 4) or (myclass == "SHAMAN" and tree == 3) then
-		role = "Healer"
-	end
-	return role
+local createFont = ns.createFont
+local createBackdrop = ns.createBackdrop
+local Updatehealthcolor = ns.Updatehealthcolor
+local CreateHighlight = ns.CreateHighlight
+
+--=============================================--
+--[[               Some update               ]]--
+--=============================================--
+local pxbackdrop = {edgeFile = "Interface\\ChatFrame\\ChatFrameBackground", edgeSize = 1}
+
+local function Createpxborder(self, lvl)
+	local pxbd = CreateFrame("Frame", nil, self)
+	pxbd:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
+	pxbd:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
+	pxbd:SetBackdrop(pxbackdrop)
+	pxbd:SetFrameLevel(lvl)
+	pxbd:Hide()
+	return pxbd
 end
 
+local function ChangedTarget(self, event, unit)
+	if UnitIsUnit('target', self.unit) then
+		self.targetborder:Show()
+	else
+		self.targetborder:Hide()
+	end
+end
+
+local function UpdateThreat(self, event, unit)	
+	if (self.unit ~= unit) then return end
+	
+	unit = unit or self.unit
+	local status = UnitThreatSituation(unit)
+	
+	if status and status > 1 then
+		local r, g, b = GetThreatStatusColor(status)
+		self.threatborder:SetBackdropBorderColor(r, g, b)
+		self.threatborder:Show()
+	else
+		self.threatborder:Hide()
+	end
+end
+
+local function healpreditionbar(self, color)
+	local hpb = CreateFrame('StatusBar', nil, self.Health)
+	hpb:SetStatusBarTexture(texture)
+	hpb:SetStatusBarColor(unpack(color))
+	hpb:SetPoint('TOP')
+	hpb:SetPoint('BOTTOM')
+	if cfg.classcolormode then
+		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+	else
+		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+	end
+	hpb:SetWidth(200)
+	return hpb
+end
+
+local function CreateHealPredition(self)
+	local myBar = healpreditionbar(self, cfg.myhealpredictioncolor)
+	local otherBar = healpreditionbar(self, cfg.otherhealpredictioncolor)
+	self.HealPrediction = {
+		myBar = myBar,
+		otherBar = otherBar,
+	}
+end
+--=============================================--
+--[[              Raid Frames                ]]--
+--=============================================--
 local func = function(self, unit)
 
-    self:SetScript("OnEnter", UnitFrame_OnEnter)
-    self:SetScript("OnLeave", UnitFrame_OnLeave)
+	CreateHighlight(self)
     self:RegisterForClicks"AnyUp"
 	
 	-- shadow border for health bar --
-    self.backdrop = ns.backdrop(self, self, 0, 3)  -- this also use for dispel border
+    self.backdrop = createBackdrop(self, self, 0, 3)  -- this also use for dispel border
 
+	-- target border --
+	self.targetborder = Createpxborder(self, 6)
+	self.targetborder:SetBackdropBorderColor(1, 1, .3)
+	self:RegisterEvent('PLAYER_TARGET_CHANGED', ChangedTarget)
+	self:RegisterEvent('RAID_ROSTER_UPDATE', ChangedTarget)
+	
+	-- threat border --
+	self.threatborder = Createpxborder(self, 5)
+	self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
+	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+	
     local hp = CreateFrame("StatusBar", nil, self)
     hp:SetAllPoints(self)
 	hp:SetStatusBarTexture(texture)
@@ -42,23 +112,25 @@ local func = function(self, unit)
 			if UnitIsDeadOrGhost(unit) then hp:SetValue(0)
 			else hp:SetValue(max - hp:GetValue()) end
 		end
-		return ns.updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit)
+		return Updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit)
 	end
+	
+	-- backdrop grey gradient --
+	hp.bg = hp:CreateTexture(nil, "BACKGROUND")
+	hp.bg:SetAllPoints()
+	hp.bg:SetTexture(cfg.texture)
+	if cfg.classcolormode then
+		hp.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
+	else
+		hp.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .2, .1, .1, .1, .2)
+	end
+	
     self.Health = hp
 	
-	-- backdrop color --
-	local gradient = hp:CreateTexture(nil, "BACKGROUND")
-	gradient:SetPoint("TOPLEFT")
-	gradient:SetPoint("BOTTOMRIGHT")
-	gradient:SetTexture(texture)
-	gradient:SetGradientAlpha("VERTICAL", .3, .3, .3, .3, .1, .1, .1, .3)
-	self.gradient = gradient
-	
-    local info = hp:CreateFontString(nil, "OVERLAY")
-    info:SetPoint("TOP", hp, "TOP", 0, -2)
-    info:SetFont(symbols, fontsize +3, "OUTLINE")
-    info:SetShadowOffset(0, 0)
-    self:Tag(info, '[Mlight:raidinfo]')
+	-- heal prediction --
+	if cfg.healprediction then
+		CreateHealPredition(self)
+	end
 	
 	local leader = hp:CreateTexture(nil, "OVERLAY")
     leader:SetSize(12, 12)
@@ -70,15 +142,12 @@ local func = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 
-	local lfd = hp:CreateFontString(nil, "OVERLAY")
+	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-2, fontflag, 1, 1, 1)
 	lfd:SetPoint("LEFT", hp, 1, -1)
-	lfd:SetFont(symbols, fontsize-2, "OUTLINE")
-	lfd.Override = ns.UpdateLFD
+	self:Tag(lfd, '[Mlight:LFD]')
 	
-	local raidname = hp:CreateFontString(nil, "OVERLAY")
+	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1)
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
-    raidname:SetFont(font, fontsize, "OUTLINE")
-    raidname:SetShadowOffset(0, 0)
 	if not cfg.classcolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:shortname]')
 	else
@@ -86,10 +155,15 @@ local func = function(self, unit)
 	end
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY")
+	ricon:SetSize(10 ,10)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
-    ricon:SetSize(10 ,10)
     self.RaidIcon = ricon
-
+	
+	local resurrecticon = self:CreateTexture(nil, 'OVERLAY')
+    resurrecticon:SetSize(16, 16)
+    resurrecticon:SetPoint("BOTTOM", hp, "BOTTOM", 0 , 5)
+    self.ResurrectIcon = resurrecticon
+	
 	-- Auras
     local auras = CreateFrame("Frame", nil, self)
     auras:SetSize(20, 20)
@@ -119,12 +193,11 @@ end
 
 local dfunc = function(self, unit)
 
-    self:SetScript("OnEnter", UnitFrame_OnEnter)
-    self:SetScript("OnLeave", UnitFrame_OnLeave)
+	CreateHighlight(self)
     self:RegisterForClicks"AnyUp"
 	
 	-- shadow border for health bar --
-    self.backdrop = ns.backdrop(self, self, 0, 3)  -- this also use for dispel border
+    self.backdrop = createBackdrop(self, self, 0, 3)  -- this also use for dispel border
 
     local hp = CreateFrame("StatusBar", nil, self)
     hp:SetAllPoints(self)
@@ -141,25 +214,21 @@ local dfunc = function(self, unit)
 			if UnitIsDeadOrGhost(unit) then hp:SetValue(0)
 			else hp:SetValue(max - hp:GetValue()) end
 		end
-		return ns.updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit)
+		return Updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit)
 	end
+	
+	-- backdrop grey gradient --
+	hp.bg = hp:CreateTexture(nil, "BACKGROUND")
+	hp.bg:SetAllPoints()
+	hp.bg:SetTexture(cfg.texture)
+	if cfg.classcolormode then
+		hp.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
+	else
+		hp.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .2, .1, .1, .1, .2)
+	end
+	
     self.Health = hp
 	
-	-- backdrop color --
-	local gradient = hp:CreateTexture(nil, "BACKGROUND")
-	gradient:SetPoint("TOPLEFT")
-	gradient:SetPoint("BOTTOMRIGHT")
-	gradient:SetTexture(texture)
-	gradient:SetGradientAlpha("VERTICAL", .3, .3, .3, .3, .1, .1, .1, .3)
-	self.gradient = gradient
-	
-    local info = hp:CreateFontString(nil, "OVERLAY")
-    info:SetPoint("LEFT", hp, "LEFT", 5, 0)
-    info:SetFont(symbols, fontsize, "OUTLINE")
-    info:SetShadowOffset(0, 0)
-    info:SetTextColor(1, 1, 1)
-    self:Tag(info, '[Mlight:raidinfo]')
-
 	local leader = hp:CreateTexture(nil, "OVERLAY")
     leader:SetSize(12, 12)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
@@ -170,15 +239,12 @@ local dfunc = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 	
-	local lfd = hp:CreateFontString(nil, "OVERLAY")
+	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-2, fontflag, 1, 1, 1)
 	lfd:SetPoint("LEFT", hp, 1, -1)
-	lfd:SetFont(symbols, fontsize-2, "OUTLINE")
-	lfd.Override = ns.UpdateLFD
+	self:Tag(lfd, '[Mlight:LFD]')
 		
-	local raidname = hp:CreateFontString(nil, "OVERLAY")
+	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1)
 	raidname:SetPoint("BOTTOMLEFT", hp, "BOTTOMRIGHT", 5, 0)
-    raidname:SetFont(font, fontsize, "OUTLINE")
-    raidname:SetShadowOffset(0, 0)
 	if not cfg.classcolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:shortname]')
 	else
@@ -186,10 +252,15 @@ local dfunc = function(self, unit)
 	end
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY")
+	ricon:SetSize(10 ,10)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
-    ricon:SetSize(10 ,10)
     self.RaidIcon = ricon
-
+	
+	local resurrecticon = self:CreateTexture(nil, 'OVERLAY')
+    resurrecticon:SetSize(16, 16)
+    resurrecticon:SetPoint("BOTTOM", hp, "BOTTOM", 0 , 5)
+    self.ResurrectIcon = resurrecticon
+	
 	-- Auras
     local auras = CreateFrame("Frame", nil, self)
     auras:SetSize(10, 10)
@@ -211,55 +282,68 @@ oUF:RegisterStyle("Mlight_DPSraid", dfunc)
 
 local healerraid, dpsraid
 
-oUF:SetActiveStyle"Mlight_Healerraid"
-healerraid = oUF:SpawnHeader('HealerRaid_Mlight', nil, 'raid,party,solo',
-'oUF-initialConfigFunction', ([[
-self:SetWidth(%d)
-self:SetHeight(%d)
-self:SetScale(%d)
-]]):format(cfg.healerraidwidth, cfg.healerraidheight, 1),
-'showPlayer', true,
-'showSolo', cfg.showsolo,
-'showParty', true,
-'showRaid', true,
-'xoffset', 5,
-'yOffset', -5,
-'point', cfg.anchor,
-'groupFilter', '1,2,3,4,5,6,7,8',
-'groupingOrder', '1,2,3,4,5,6,7,8',
-'groupBy', 'GROUP',
-'maxColumns', 5,
-'unitsPerColumn', 5,
-'columnSpacing', 5,
-'columnAnchorPoint', cfg.partyanchor
-)
-healerraid:SetPoint(unpack(cfg.healerraidposition))
+local function Spawnhealraid()
+	oUF:SetActiveStyle"Mlight_Healerraid"
+	healerraid = oUF:SpawnHeader('HealerRaid_Mlight', nil, 'raid,party,solo',
+		'oUF-initialConfigFunction', ([[
+		self:SetWidth(%d)
+		self:SetHeight(%d)
+		self:SetScale(%d)
+		]]):format(cfg.healerraidwidth, cfg.healerraidheight, 1),
+		'showPlayer', true,
+		'showSolo', cfg.showsolo,
+		'showParty', true,
+		'showRaid', true,
+		'xoffset', 5,
+		'yOffset', -5,
+		'point', cfg.anchor,
+		'groupFilter', '1,2,3,4,5,6,7,8',
+		'groupingOrder', '1,2,3,4,5,6,7,8',
+		'groupBy', 'GROUP',
+		'maxColumns', 5,
+		'unitsPerColumn', 5,
+		'columnSpacing', 5,
+		'columnAnchorPoint', cfg.partyanchor
+	)
+	healerraid:SetPoint(unpack(cfg.healerraidposition))
+end
 
-oUF:SetActiveStyle"Mlight_DPSraid"
-dpsraid = oUF:SpawnHeader('DpsRaid_Mlight', nil, 'raid,party,solo',
-'oUF-initialConfigFunction', ([[
-self:SetWidth(%d)
-self:SetHeight(%d)
-self:SetScale(%d)
-]]):format(cfg.dpsraidwidth, cfg.dpsraidheight, 1),
-'showPlayer', true,
-'showSolo', cfg.showsolo,
-'showParty', true,
-'showRaid', true,
-'xoffset', 5,
-'yOffset', -5,
-'point', "TOP",
-'groupFilter', '1,2,3,4,5,6,7,8',
-'groupingOrder', '1,2,3,4,5,6,7,8',
-'groupBy', 'GROUP',
-'maxColumns', 5,
-'unitsPerColumn', 5,
-'columnSpacing', 5,
-'columnAnchorPoint', "TOP"
-)
-dpsraid:SetPoint(unpack(cfg.dpsraidposition))
+local function Spawndpsraid()
+	oUF:SetActiveStyle"Mlight_DPSraid"
+	dpsraid = oUF:SpawnHeader('DpsRaid_Mlight', nil, 'raid,party,solo',
+		'oUF-initialConfigFunction', ([[
+		self:SetWidth(%d)
+		self:SetHeight(%d)
+		self:SetScale(%d)
+		]]):format(cfg.dpsraidwidth, cfg.dpsraidheight, 1),
+		'showPlayer', true,
+		'showSolo', cfg.showsolo,
+		'showParty', true,
+		'showRaid', true,
+		'xoffset', 5,
+		'yOffset', -5,
+		'point', "TOP",
+		'groupFilter', '1,2,3,4,5,6,7,8',
+		'groupingOrder', '1,2,3,4,5,6,7,8',
+		'groupBy', 'GROUP',
+		'maxColumns', 5,
+		'unitsPerColumn', 5,
+		'columnSpacing', 5,
+		'columnAnchorPoint', "TOP"
+	)
+	dpsraid:SetPoint(unpack(cfg.dpsraidposition))
+end
 
-function hiderf(f)
+local function CheckRole()
+	local role
+	local tree = GetSpecialization()
+	if ((myclass == "MONK" and tree == 2) or (myclass == "PRIEST" and (tree == 1 or tree ==2)) or (myclass == "PALADIN" and tree == 1)) or (myclass == "DRUID" and tree == 4) or (myclass == "SHAMAN" and tree == 3) then
+		role = "Healer"
+	end
+	return role
+end
+
+local function hiderf(f)
 	show = f.Show
 	f:Hide()
 	f.Show = f.Hide
@@ -267,18 +351,14 @@ function hiderf(f)
 	f.mode = 0
 end
 
-function showrf(f)
+local function showrf(f)
 	f.Show = f.show
 	f:Show()
 	f.mode = 1
 end
 
-hiderf(healerraid) -- set mode to 0
-hiderf(dpsraid) -- set mode to 0
-
-local RoleUpdater = CreateFrame("Frame")
-function RoleUpdater:togglerf()
-	Role = CheckRole()
+function togglerf()
+	local Role = CheckRole()
 	if Role then
 		if dpsraid.mode == 1 then hiderf(dpsraid) end
 		if healerraid.mode == 0 then showrf(healerraid) end
@@ -288,9 +368,76 @@ function RoleUpdater:togglerf()
 	end
 end
 
---RoleUpdater:RegisterEvent("PLAYER_ENTERING_WORLD")
-RoleUpdater:RegisterEvent("PLAYER_TALENT_UPDATE")-- this fires before PLAYER_ENTERING_WORLD so we only need this.
-RoleUpdater:SetScript("OnEvent", RoleUpdater.togglerf)
+local EventFrame = CreateFrame("Frame")
+local ishealer
+
+EventFrame:RegisterEvent("ADDON_LOADED")
+EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+EventFrame:SetScript("OnEvent", function(self, event, ...)
+    self[event](self, ...)
+end)
+-- we just spwan one of the raid frames at first
+function EventFrame:ADDON_LOADED(arg1)
+	if arg1 ~= "oUF_Mlight" then return end
+	local logincheck = CheckRole()
+	if logincheck then
+		Spawnhealraid()
+		ishealer = true
+	else
+		Spawndpsraid()
+		ishealer = false
+	end
+	EventFrame:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE")
+end
+-- this is the first event that can recognize InCombatLockdown()
+-- if we are in combat, we wait unit we leave combat
+-- if we are not in combat, we spwan the other raid frame
+function EventFrame:UNIT_THREAT_SITUATION_UPDATE()
+	if InCombatLockdown() then
+		--print"in combat"
+		EventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+	else
+		--print"not in combat"
+		if ishealer then 
+			Spawndpsraid()
+		else
+			Spawnhealraid()
+		end
+		dpsraid.mode = 1
+		healerraid.mode = 1
+		togglerf()
+	end
+	EventFrame:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE")
+end
+-- earlier we are in combat, now we spwan another frame when we leave combat
+function EventFrame:PLAYER_REGEN_ENABLED()
+	if ishealer then 
+		Spawndpsraid()
+	else
+		Spawnhealraid()
+	end
+	dpsraid.mode = 1
+	healerraid.mode = 1
+	togglerf()
+	EventFrame:UnregisterEvent("PLAYER_REGEN_ENABLED")
+end
+
+function EventFrame:PLAYER_ENTERING_WORLD()
+	CompactRaidFrameManager:Hide()
+	CompactRaidFrameManager:UnregisterAllEvents()
+	CompactRaidFrameContainer:Hide()
+	CompactRaidFrameContainer:UnregisterAllEvents()
+	CompactRaidFrameManager.Show = CompactRaidFrameManager.Hide
+	CompactRaidFrameContainer.Show = CompactRaidFrameContainer.Hide
+	
+	EventFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+	EventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+end
+
+function EventFrame:PLAYER_TALENT_UPDATE()
+	togglerf()
+end
 
 local function SlashCmd(cmd)
     if (cmd:match"healer") then
@@ -308,22 +455,3 @@ end
 
 SlashCmdList["MlightRaid"] = SlashCmd;
 SLASH_MlightRaid1 = "/rf"
-
---hide blz raid frame and manager
-local f = CreateFrame("Frame");
-f:RegisterEvent("PLAYER_ENTERING_WORLD");
-
-f.EventHandler = function(self, ...)
-	CompactRaidFrameManager:Hide();
-	CompactRaidFrameManager:UnregisterAllEvents();
-	CompactRaidFrameContainer:Hide();
-	CompactRaidFrameContainer:UnregisterAllEvents();
-	CompactRaidFrameManager.Show = CompactRaidFrameManager.Hide;
-	CompactRaidFrameContainer.Show = CompactRaidFrameContainer.Hide;
-	
-	self:UnregisterAllEvents();
-	self:SetScript("OnEvent", nil);
-	self = nil;
-end
-
-f:SetScript("OnEvent", f.EventHandler);
