@@ -500,6 +500,47 @@ local CreateCastbars = function(self, unit)
 end
 
 --=============================================--
+--[[                   Auras                 ]]--
+--=============================================--
+local CreateAuras = function(self, unit)
+    if multicheck(u, "target", "focus", "pet", "boss") then
+		local Auras = CreateFrame("Frame", nil, self)
+		Auras:SetHeight(cfg.height*2)
+		Auras:SetWidth(cfg.width)
+		Auras.gap = true
+		Auras.PostCreateIcon = PostCreateIcon
+		Auras.PostUpdateIcon = PostUpdateIcon
+		Auras.PostUpdateGapIcon = PostUpdateGapIcon
+	
+		if unit == "target" or unit == "focus" then
+			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 5)
+			Auras.initialAnchor = "BOTTOMLEFT"
+			Auras["growth-x"] = "RIGHT"
+			Auras["growth-y"] = "UP"
+			Auras.numDebuffs = cfg.auraperrow
+			Auras.numBuffs = cfg.auraperrow
+			Auras.onlyShowPlayer = cfg.onlyShowPlayer
+		elseif unit == "pet" then
+			Auras:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 5, 0)
+			Auras.initialAnchor = "BOTTOMLFET"
+			Auras["growth-x"] = "RIGHT"
+			Auras["growth-y"] = "DOWN"
+			Auras.numDebuffs = 5
+			Auras.numBuffs = 0
+		else -- boss 1-5
+			Auras:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -5, 0)
+			Auras.initialAnchor = "BOTTOMRIGHT"
+			Auras["growth-x"] = "LEFT"
+			Auras["growth-y"] = "DOWN"		
+			Auras.numDebuffs = 4
+			Auras.numBuffs = 3
+			Auras.onlyShowPlayer = cfg.onlyShowPlayer
+		end
+	
+		self.Auras = Auras
+	end
+end
+--=============================================--
 --[[              Unit Frames                ]]--
 --=============================================--
 
@@ -571,25 +612,25 @@ local func = function(self, unit)
 	
 	-- power bar --
     if not (unit == "targettarget" or unit == "focustarget") then
-    local pp = createStatusbar(self, cfg.texture, nil, cfg.height*-(cfg.hpheight-1), nil, 1, 1, 1, 1)
-    pp:SetPoint"LEFT"
-    pp:SetPoint"RIGHT"
-	pp:SetPoint("TOP", self, "BOTTOM", 0, -3)
-    pp.frequentUpdates = false
-    pp.Smooth = true
+		local pp = createStatusbar(self, cfg.texture, nil, cfg.height*-(cfg.hpheight-1), nil, 1, 1, 1, 1)
+		pp:SetPoint"LEFT"
+		pp:SetPoint"RIGHT"
+		pp:SetPoint("TOP", self, "BOTTOM", 0, -3)
+		pp.frequentUpdates = false
+		pp.Smooth = true
 		
-	-- power color --	
-    if not cfg.classcolormode then
-        pp.colorClass = true
-		pp.colorReaction = true
-    else
-        pp.colorPower = true
-    end
+		-- power color --	
+		if not cfg.classcolormode then
+			pp.colorClass = true
+			pp.colorReaction = true
+		else
+			pp.colorPower = true
+		end
 	
-	-- shadow border for power bar --	
-    createBackdrop(pp, pp, 1, 3)
+		-- shadow border for power bar --	
+		createBackdrop(pp, pp, 1, 3)
 	
-    self.Power = pp
+		self.Power = pp
     end
 
 	-- altpower bar --
@@ -654,6 +695,10 @@ local func = function(self, unit)
     if cfg.castbars then
         CreateCastbars(self, unit)
     end
+	
+	if cfg.auras then
+		CreateAuras(self, unit)
+	end
 	
     self.FadeMinAlpha = 0
 	self.FadeInSmooth = 0.4
@@ -806,24 +851,6 @@ local UnitSpecific = {
     --========================--
     target = function(self, ...)
         func(self, ...)
-		
-        if cfg.auras then
-            local Auras = CreateFrame("Frame", nil, self)
-            Auras:SetHeight(cfg.height*2)
-            Auras:SetWidth(cfg.width)
-            Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
-            Auras.gap = true
-            Auras.initialAnchor = "BOTTOMLEFT"
-
-            Auras.PostCreateIcon = PostCreateIcon
-            Auras.PostUpdateIcon = PostUpdateIcon
-            Auras.onlyShowPlayer = cfg.onlyShowPlayer
-			Auras.PostUpdateGapIcon = PostUpdateGapIcon
-			
-            self.Auras = Auras
-            self.Auras.numDebuffs = 8
-            self.Auras.numBuffs = 10
-        end
     end,
 
     --========================--
@@ -831,23 +858,6 @@ local UnitSpecific = {
     --========================--
     focus = function(self, ...)
         func(self, ...)
-
-        if cfg.auras then 
-            local Auras = CreateFrame("Frame", nil, self)
-            Auras:SetHeight(cfg.height*2)
-            Auras:SetWidth(cfg.width)
-            Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
-            Auras.gap = true
-            Auras.initialAnchor = "BOTTOMLEFT"
-
-            Auras.PostCreateIcon = PostCreateIcon
-            Auras.PostUpdateIcon = PostUpdateIcon
-			Auras.PostUpdateGapIcon = PostUpdateGapIcon
-			
-            self.Auras = Auras
-            self.Auras.numDebuffs = 8
-            self.Auras.numBuffs = 10
-        end
     end,
 
     --========================--
@@ -862,22 +872,6 @@ local UnitSpecific = {
     --========================--
     pet = function(self, ...)
         func(self, ...)
-
-        if cfg.auras then 
-            local debuffs = CreateFrame("Frame", nil, self)
-            debuffs:SetHeight(cfg.height)
-            debuffs:SetWidth(cfg.width)
-            debuffs:SetPoint("RIGHT", self, "LEFT", -5, 0)
-            debuffs.initialAnchor = "BOTTOMRIGHT"
-	        debuffs["growth-x"] = "RIGHT"
-            debuffs["growth-y"] = "DOWN"
-
-            debuffs.PostCreateIcon = PostCreateIcon
-            debuffs.PostUpdateIcon = PostUpdateIcon
-
-            self.Debuffs = debuffs
-            self.Debuffs.num = 5
-        end
     end,
 
     --========================--
@@ -885,7 +879,6 @@ local UnitSpecific = {
     --========================--
     targettarget = function(self, ...)
         func(self, ...)
-
     end,
 
     --========================--
@@ -893,25 +886,6 @@ local UnitSpecific = {
     --========================--
     boss = function(self, ...)
         func(self, ...)
-
-		if cfg.auras then 
-			local Auras = CreateFrame("Frame", nil, self)
-			Auras:SetHeight(cfg.height)
-			Auras:SetWidth(cfg.width)
-			Auras:SetPoint("RIGHT", self, "LEFT", -5, 0)
-			Auras.gap = true
-			Auras.initialAnchor = "BOTTOMRIGHT"
-			Auras["growth-x"] = "LEFT"
-
-			Auras.PostCreateIcon = PostCreateIcon
-			Auras.PostUpdateIcon = PostUpdateIcon
-			Auras.onlyShowPlayer = true
-			Auras.PostUpdateGapIcon = PostUpdateGapIcon
-	
-			self.Auras = Auras
-			self.Auras.numDebuffs = 4
-			self.Auras.numBuffs = 3
-		end
     end,
 }
 

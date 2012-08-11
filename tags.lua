@@ -102,7 +102,7 @@ oUF.Tags.Methods['Mlight:altpower'] = function(u)
     local max = UnitPowerMax(u, ALTERNATE_POWER_INDEX)
 
     if min > 0 and max > 0 then
-        return format("%d", floor(cur/max*100)).."%"
+        return format("%d", floor(min/max*100)).."%"
     end
 end
 oUF.Tags.Events['Mlight:altpower'] = "UNIT_POWER UNIT_MAXPOWER"
