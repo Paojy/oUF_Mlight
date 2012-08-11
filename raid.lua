@@ -280,7 +280,8 @@ end
 oUF:RegisterStyle("Mlight_Healerraid", func)
 oUF:RegisterStyle("Mlight_DPSraid", dfunc)
 
-local healerraid, dpsraid
+local healerraid
+local dpsraid
 
 local function Spawnhealraid()
 	oUF:SetActiveStyle"Mlight_Healerraid"
@@ -344,32 +345,29 @@ local function CheckRole()
 end
 
 local function hiderf(f)
-	show = f.Show
-	f:Hide()
-	f.Show = f.Hide
-	f.show = show
-	f.mode = 0
+	if cfg.showsolo and f:GetAttribute("showSolo") then f:SetAttribute("showSolo", false) end
+	if f:GetAttribute("showParty") then f:SetAttribute("showParty", false) end
+	if f:GetAttribute("showParty") then f:SetAttribute("showRaid", false) end
 end
 
 local function showrf(f)
-	f.Show = f.show
-	f:Show()
-	f.mode = 1
+	if cfg.showsolo and not f:GetAttribute("showSolo") then f:SetAttribute("showSolo", true) end
+	if not f:GetAttribute("showParty") then f:SetAttribute("showParty", true) end
+	if not f:GetAttribute("showParty") then f:SetAttribute("showRaid", true) end
 end
 
 function togglerf()
 	local Role = CheckRole()
 	if Role then
-		if dpsraid.mode == 1 then hiderf(dpsraid) end
-		if healerraid.mode == 0 then showrf(healerraid) end
+		hiderf(dpsraid)
+		showrf(healerraid)
 	else
-		if healerraid.mode == 1 then hiderf(healerraid) end
-		if dpsraid.mode == 0 then showrf(dpsraid) end
+		hiderf(healerraid)
+		showrf(dpsraid)
 	end
 end
 
 local EventFrame = CreateFrame("Frame")
-local ishealer
 
 EventFrame:RegisterEvent("ADDON_LOADED")
 EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -377,50 +375,12 @@ EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 EventFrame:SetScript("OnEvent", function(self, event, ...)
     self[event](self, ...)
 end)
--- we just spwan one of the raid frames at first
+
 function EventFrame:ADDON_LOADED(arg1)
 	if arg1 ~= "oUF_Mlight" then return end
-	local logincheck = CheckRole()
-	if logincheck then
-		Spawnhealraid()
-		ishealer = true
-	else
-		Spawndpsraid()
-		ishealer = false
-	end
-	EventFrame:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE")
-end
--- this is the first event that can recognize InCombatLockdown()
--- if we are in combat, we wait unit we leave combat
--- if we are not in combat, we spwan the other raid frame
-function EventFrame:UNIT_THREAT_SITUATION_UPDATE()
-	if InCombatLockdown() then
-		--print"in combat"
-		EventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-	else
-		--print"not in combat"
-		if ishealer then 
-			Spawndpsraid()
-		else
-			Spawnhealraid()
-		end
-		dpsraid.mode = 1
-		healerraid.mode = 1
-		togglerf()
-	end
-	EventFrame:UnregisterEvent("UNIT_THREAT_SITUATION_UPDATE")
-end
--- earlier we are in combat, now we spwan another frame when we leave combat
-function EventFrame:PLAYER_REGEN_ENABLED()
-	if ishealer then 
-		Spawndpsraid()
-	else
-		Spawnhealraid()
-	end
-	dpsraid.mode = 1
-	healerraid.mode = 1
+	Spawnhealraid()
+	Spawndpsraid()
 	togglerf()
-	EventFrame:UnregisterEvent("PLAYER_REGEN_ENABLED")
 end
 
 function EventFrame:PLAYER_ENTERING_WORLD()
@@ -441,11 +401,11 @@ end
 
 local function SlashCmd(cmd)
     if (cmd:match"healer") then
-		if dpsraid.mode == 1 then hiderf(dpsraid) end
-		if healerraid.mode == 0 then showrf(healerraid) end
+		hiderf(dpsraid)
+		showrf(healerraid)
     elseif (cmd:match"dps") then
-		if healerraid.mode == 1 then hiderf(healerraid) end
-		if dpsraid.mode == 0 then showrf(dpsraid) end
+		hiderf(healerraid)
+		showrf(dpsraid)
     else
       print("|c0000FF00oUF_Mlight command list:|r")
       print("|c0000FF00\/rf healer")
