@@ -259,7 +259,6 @@ classIndicators={
 }
 
 local _, class = UnitClass("player")
-local indicator = "Interface\\Addons\\oUF_Mlight\\media\\squares.ttf"
 local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
 
 local update = .25
@@ -269,21 +268,21 @@ local Enable = function(self)
         self.AuraStatusTL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTL:ClearAllPoints()
         self.AuraStatusTL:SetPoint("TOPLEFT", self.Health, 0, 0)
-        self.AuraStatusTL:SetFont(indicator, indicatorsize, "THINOUTLINE")
+        self.AuraStatusTL:SetFont(symbols, indicatorsize, "THINOUTLINE")
         self.AuraStatusTL.frequentUpdates = update
         self:Tag(self.AuraStatusTL, classIndicators[class]["TL"])
 
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
         self.AuraStatusTR:SetPoint("TOPRIGHT", self.Health, 1, 0)
-        self.AuraStatusTR:SetFont(indicator, indicatorsize, "THINOUTLINE")
+        self.AuraStatusTR:SetFont(symbols, indicatorsize, "THINOUTLINE")
         self.AuraStatusTR.frequentUpdates = update
         self:Tag(self.AuraStatusTR, classIndicators[class]["TR"])
 
         self.AuraStatusBL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusBL:ClearAllPoints()
         self.AuraStatusBL:SetPoint("BOTTOMLEFT", self.Health, 0, 0)
-        self.AuraStatusBL:SetFont(indicator, indicatorsize, "THINOUTLINE")
+        self.AuraStatusBL:SetFont(symbols, indicatorsize, "THINOUTLINE")
         self.AuraStatusBL.frequentUpdates = update
         self:Tag(self.AuraStatusBL, classIndicators[class]["BL"])	
 
