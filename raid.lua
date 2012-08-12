@@ -112,7 +112,7 @@ local func = function(self, unit)
 			if UnitIsDeadOrGhost(unit) then hp:SetValue(0)
 			else hp:SetValue(max - hp:GetValue()) end
 		end
-		return Updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit)
+		return Updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit, 1)
 	end
 	
 	-- backdrop grey gradient --
@@ -214,7 +214,7 @@ local dfunc = function(self, unit)
 			if UnitIsDeadOrGhost(unit) then hp:SetValue(0)
 			else hp:SetValue(max - hp:GetValue()) end
 		end
-		return Updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit)
+		return Updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit, 1)
 	end
 	
 	-- backdrop grey gradient --
@@ -370,6 +370,7 @@ end
 local EventFrame = CreateFrame("Frame")
 
 EventFrame:RegisterEvent("ADDON_LOADED")
+EventFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
 EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 EventFrame:SetScript("OnEvent", function(self, event, ...)
@@ -380,6 +381,9 @@ function EventFrame:ADDON_LOADED(arg1)
 	if arg1 ~= "oUF_Mlight" then return end
 	Spawnhealraid()
 	Spawndpsraid()
+end
+
+function EventFrame:PLAYER_TALENT_UPDATE()
 	togglerf()
 end
 
@@ -390,13 +394,8 @@ function EventFrame:PLAYER_ENTERING_WORLD()
 	CompactRaidFrameContainer:UnregisterAllEvents()
 	CompactRaidFrameManager.Show = CompactRaidFrameManager.Hide
 	CompactRaidFrameContainer.Show = CompactRaidFrameContainer.Hide
-	
-	EventFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
-	EventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
-end
 
-function EventFrame:PLAYER_TALENT_UPDATE()
-	togglerf()
+	EventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 local function SlashCmd(cmd)
