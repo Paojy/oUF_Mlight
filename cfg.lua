@@ -63,9 +63,10 @@ cfg.healerraidposition = {"TOPLEFT", "UIParent","CENTER", 150, -100}
 cfg.healerraidheight, cfg.healerraidwidth = 30, 90
 cfg.anchor = "TOP"
 cfg.partyanchor = "LEFT"
+cfg.showgcd = true
 cfg.healprediction = true
-cfg.myhealpredictioncolor = { 110/255, 210/255, 0/255, 0.5}
-cfg.otherhealpredictioncolor = { 0/255, 110/255, 0/255, 0.5}
+	cfg.myhealpredictioncolor = { 110/255, 210/255, 0/255, 0.5}
+	cfg.otherhealpredictioncolor = { 0/255, 110/255, 0/255, 0.5}
  -- dps/tank mode(1*25)
 cfg.dpsraidposition = {"TOPLEFT", UIParent, "TOPLEFT", 20, -168}
 cfg.dpsraidheight, cfg.dpsraidwidth = 15, 70

@@ -13,7 +13,6 @@ local createFont = ns.createFont
 local createBackdrop = ns.createBackdrop
 local Updatehealthcolor = ns.Updatehealthcolor
 local CreateHighlight = ns.CreateHighlight
-
 --=============================================--
 --[[               Some update               ]]--
 --=============================================--
@@ -75,6 +74,15 @@ local function CreateHealPredition(self)
 		otherBar = otherBar,
 	}
 end
+
+local function CreateGCDframe(self)
+    local Gcd = CreateFrame("StatusBar", nil, self)
+    Gcd:SetAllPoints(self)
+    Gcd:SetStatusBarTexture(texture)
+    Gcd:SetStatusBarColor(.4, .7, .4, .6)
+    Gcd:SetFrameLevel(5)
+    self.GCD = Gcd
+end
 --=============================================--
 --[[              Raid Frames                ]]--
 --=============================================--
@@ -87,13 +95,13 @@ local func = function(self, unit)
     self.backdrop = createBackdrop(self, self, 0, 3)  -- this also use for dispel border
 
 	-- target border --
-	self.targetborder = Createpxborder(self, 6)
+	self.targetborder = Createpxborder(self, 7)
 	self.targetborder:SetBackdropBorderColor(1, 1, .3)
 	self:RegisterEvent('PLAYER_TARGET_CHANGED', ChangedTarget)
 	self:RegisterEvent('RAID_ROSTER_UPDATE', ChangedTarget)
 	
 	-- threat border --
-	self.threatborder = Createpxborder(self, 5)
+	self.threatborder = Createpxborder(self, 6)
 	self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
 	
@@ -126,6 +134,11 @@ local func = function(self, unit)
 	end
 	
     self.Health = hp
+	
+	-- gcd frane --
+	if cfg.showgcd then
+		CreateGCDframe(self)
+	end
 	
 	-- heal prediction --
 	if cfg.healprediction then
@@ -164,7 +177,7 @@ local func = function(self, unit)
     resurrecticon:SetPoint("BOTTOM", hp, "BOTTOM", 0 , 5)
     self.ResurrectIcon = resurrecticon
 	
-	-- Auras
+	-- Raid debuff
     local auras = CreateFrame("Frame", nil, self)
     auras:SetSize(20, 20)
     auras:SetPoint("LEFT", hp, "LEFT", 15, 0)
@@ -261,7 +274,7 @@ local dfunc = function(self, unit)
     resurrecticon:SetPoint("BOTTOM", hp, "BOTTOM", 0 , 5)
     self.ResurrectIcon = resurrecticon
 	
-	-- Auras
+	-- Raid debuff
     local auras = CreateFrame("Frame", nil, self)
     auras:SetSize(10, 10)
     auras:SetPoint("LEFT", hp, "LEFT", 5, 0)
