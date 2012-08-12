@@ -185,9 +185,12 @@ ns.CreateHighlight = CreateHighlight
 --=============================================--
 --[[               Some update               ]]--
 --=============================================--
-local Updatehealthcolor = function(self, event, unit)
+local Updatehealthcolor = function(self, event, unit, raid)
 
 	self.colors.smooth = {1,0,0, 1,1,0, 1,1,0}
+	local disconnnected = not UnitIsConnected(unit)
+	local dead = UnitIsDead(unit)
+	local ghost = UnitIsGhost(unit)
 	
 	if(self.unit == unit) then
 		local r, g, b
@@ -199,9 +202,15 @@ local Updatehealthcolor = function(self, event, unit)
 			perc = 1
 		end
 		
-		if(UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) or not UnitIsConnected(unit)) then
+		if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
 			r, g, b = .6, .6, .6
-		elseif(unit == "pet") then
+		elseif (disconnnected and raid) then
+			r, g, b = .3, .3, .3
+		elseif (ghost and raid) then
+			r, g, b = .6, .6, .6
+		elseif (dead and raid) then
+			r, g, b = 1, 0, 0
+		elseif (unit == "pet") then
 			local _, playerclass = UnitClass("player")
 			if cfg.classcolormode then
 				r, g, b = unpack(self.colors.class[playerclass])
