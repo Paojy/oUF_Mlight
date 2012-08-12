@@ -3,7 +3,7 @@ local cfg = ns.cfg
 
 local x = "M"
 local indicatorsize = 6
-local symbolsize = 11
+local symbolsize = 13
 local fontsizeEdge = 12
 
 local getTime = function(expirationTime)
@@ -15,7 +15,7 @@ local getTime = function(expirationTime)
 end
 
 -- Priest ÄÁÊ¦
-local pomCount = {"i","h","g","f","Z","Y"}
+local pomCount = {"i","h","g","f","Z"}
 oUF.Tags.Methods['freebgrid:pom'] = function(u) -- ÓúºÏµ»ÑÔ
     local name, _,_, c, _,_,_, fromwho = UnitAura(u, GetSpellInfo(41635)) 
     if fromwho == "player" then
@@ -26,7 +26,7 @@ oUF.Tags.Methods['freebgrid:pom'] = function(u) -- ÓúºÏµ»ÑÔ
 end
 oUF.Tags.Events['freebgrid:pom'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:rnw'] = function(u) -- »Ö¸´ Ð¡·½¿é
+oUF.Tags.Methods['freebgrid:rnw'] = function(u) -- »Ö¸´
     local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(139))
     if(fromwho == "player") then
         local spellTimer = GetTime() - expirationTime
@@ -41,7 +41,7 @@ oUF.Tags.Methods['freebgrid:rnw'] = function(u) -- »Ö¸´ Ð¡·½¿é
 end
 oUF.Tags.Events['freebgrid:rnw'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:rnwTime'] = function(u) -- »Ö¸´ ÃëÊý
+oUF.Tags.Methods['freebgrid:rnwTime'] = function(u) -- »Ö¸´
     local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(139))
     if(fromwho == "player") then return getTime(expirationTime) end 
 end
@@ -60,8 +60,8 @@ oUF.Tags.Methods['freebgrid:pwb'] = function(u) if UnitAura(u, GetSpellInfo(8178
 oUF.Tags.Events['freebgrid:pwb'] = "UNIT_AURA"
 
 -- Druid
-local lbCount = { 4, 2, 3}
-oUF.Tags.Methods['freebgrid:lb'] = function(u) -- ÉúÃüÕÀ·Å ²ãÊý Ð¦Á³
+local lbCount = { 5, 7, 3}
+oUF.Tags.Methods['freebgrid:lb'] = function(u) -- ÉúÃüÕÀ·Å
     local name, _,_, c,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(33763))
     if(fromwho == "player") then
         local spellTimer = GetTime()-expirationTime
@@ -76,7 +76,7 @@ oUF.Tags.Methods['freebgrid:lb'] = function(u) -- ÉúÃüÕÀ·Å ²ãÊý Ð¦Á³
 end
 oUF.Tags.Events['freebgrid:lb'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:rejuv'] = function(u) -- »Ø´º Ð¡·½¿é
+oUF.Tags.Methods['freebgrid:rejuv'] = function(u) -- »Ø´º
     local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(774))
     if(fromwho == "player") then
         local spellTimer = GetTime()-expirationTime
@@ -111,13 +111,13 @@ oUF.Tags.Methods['freebgrid:rip'] = function(u)
 end
 oUF.Tags.Events['freebgrid:rip'] = 'UNIT_AURA'
 
-oUF.Tags.Methods['freebgrid:ripTime'] = function(u) --¼¤Á÷ Ê±¼ä
+oUF.Tags.Methods['freebgrid:ripTime'] = function(u) --¼¤Á÷
     local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(61295))
     if(fromwho == "player") then return getTime(expirationTime) end 
 end
 oUF.Tags.Events['freebgrid:ripTime'] = 'UNIT_AURA'
 
-local earthCount = {'i','h','g','f','p','q','Z','Z','Y'}
+local earthCount = {'i','h','g','f','i','k','l','m','Y'}
 oUF.Tags.Methods['freebgrid:earth'] = function(u) -- ´óµØÖ®¶Ü
     local c = select(4, UnitAura(u, GetSpellInfo(974))) if c then return '|cffFFCF7F'..earthCount[c]..'|r' end 
 end
@@ -163,16 +163,16 @@ oUF.Tags.Events['freebgrid:int'] = "UNIT_AURA"
 oUF.Tags.Methods['Mlight:zs'] = function(u) if UnitAura(u, GetSpellInfo(124081)) then return "|cff97FFFF"..x.."|r" end end -- ìøÒâÖé
 oUF.Tags.Events['Mlight:zs'] = "UNIT_AURA"
 
-oUF.Tags.Methods['Mlight:remist'] = function(u) -- ¸´ËÕÖ®Îí Ð¦Á³
+oUF.Tags.Methods['Mlight:remist'] = function(u) -- ¸´ËÕÖ®Îí
     local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(115151))
     if(fromwho == "player") then
         local spellTimer = GetTime()-expirationTime
         if spellTimer > -2 then
-            return "|cffFF00003|r"
+            return "|cffFF00005|r"
         elseif spellTimer > -4 then
-            return "|cffFF99001|r"
+            return "|cffFF99007|r"
         else
-            return "|cffA7FD0A2|r"
+            return "|cffA7FD0A3|r"
         end
     end
 end
@@ -181,79 +181,79 @@ oUF.Tags.Events['Mlight:remist'] = "UNIT_AURA"
 classIndicators={
     ["DRUID"] = {
         ["TL"] = "[freebgrid:rejuv]",
-        ["TR"] = "[freebgrid:motw]",
+        ["BR"] = "[freebgrid:motw]",
         ["BL"] = "[freebgrid:regrow][freebgrid:wg]",
-        ["BR"] = "[freebgrid:lb]",
+        ["TR"] = "[freebgrid:lb]",
         ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["PRIEST"] = {
         ["TL"] = "[freebgrid:rnw]",
-        ["TR"] = "[freebgrid:fort]",
+        ["BR"] = "[freebgrid:fort]",
         ["BL"] = "[freebgrid:pws][freebgrid:ws][freebgrid:pwb]",
-        ["BR"] = "[freebgrid:pom]",
+        ["TR"] = "[freebgrid:pom]",
         ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG][freebgrid:rnwTime]",
     },
     ["PALADIN"] = {
         ["TL"] = "[freebgrid:forbearance]",
-        ["TR"] = "[freebgrid:motw][freebgrid:might]",
+        ["BR"] = "[freebgrid:motw][freebgrid:might]",
         ["BL"] = "",
-        ["BR"] = "[freebgrid:beacon]",
+        ["TR"] = "[freebgrid:beacon]",
         ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["WARLOCK"] = {
         ["TL"] = "",
-        ["TR"] = "[freebgrid:di]",
+        ["BR"] = "[freebgrid:di]",
         ["BL"] = "",
-        ["BR"] = "[freebgrid:ss]",
+        ["TR"] = "[freebgrid:ss]",
         ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["WARRIOR"] = {
         ["TL"] = "",
-        ["TR"] = "[freebgrid:stragi][freebgrid:fort]",
+        ["BR"] = "[freebgrid:stragi][freebgrid:fort]",
         ["BL"] = "",
-        ["BR"] = "",
+        ["TR"] = "",
         ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["DEATHKNIGHT"] = {
         ["TL"] = "",
-        ["TR"] = "",
-        ["BL"] = "",
         ["BR"] = "",
+        ["BL"] = "",
+        ["TR"] = "",
         ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["SHAMAN"] = {
         ["TL"] = "[freebgrid:rip]",
-        ["TR"] = "",
+        ["BR"] = "",
         ["BL"] = "",
-        ["BR"] = "[freebgrid:earth]",
+        ["TR"] = "[freebgrid:earth]",
         ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG][freebgrid:ripTime]",
     },
     ["HUNTER"] = {
         ["TL"] = "",
-        ["TR"] = "",
-        ["BL"] = "",
         ["BR"] = "",
+        ["BL"] = "",
+        ["TR"] = "",
         ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["ROGUE"] = {
         ["TL"] = "",
-        ["TR"] = "",
-        ["BL"] = "",
         ["BR"] = "",
+        ["BL"] = "",
+        ["TR"] = "",
         ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
     ["MAGE"] = {
         ["TL"] = "",
-        ["TR"] = "[freebgrid:int]",
+        ["BR"] = "[freebgrid:int]",
         ["BL"] = "",
-        ["BR"] = "",
+        ["TR"] = "",
         ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
 	["MONK"] = {
         ["TL"] = "[Mlight:zs]",
-        ["TR"] = "[freebgrid:motw]",
+        ["BR"] = "[freebgrid:motw]",
         ["BL"] = "",
-        ["BR"] = "[Mlight:remist]",
+        ["TR"] = "[Mlight:remist]",
         ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
     },
 }
@@ -265,6 +265,27 @@ local update = .25
 
 local Enable = function(self)
     if(self.MlightIndicators) then
+        self.AuraStatusBL = self.Health:CreateFontString(nil, "OVERLAY")
+        self.AuraStatusBL:ClearAllPoints()
+        self.AuraStatusBL:SetPoint("BOTTOMLEFT", self.Health, 3, -2)
+        self.AuraStatusBL:SetFont(symbols, indicatorsize, "THINOUTLINE")
+        self.AuraStatusBL.frequentUpdates = update
+        self:Tag(self.AuraStatusBL, classIndicators[class]["BL"])	
+
+		self.AuraStatusBR = self.Health:CreateFontString(nil, "OVERLAY")
+        self.AuraStatusBR:ClearAllPoints()
+        self.AuraStatusBR:SetPoint("BOTTOMRIGHT", self.Health, 3, 2)
+        self.AuraStatusBR:SetFont(symbols, indicatorsize, "THINOUTLINE")
+        self.AuraStatusBR.frequentUpdates = update
+        self:Tag(self.AuraStatusBR, classIndicators[class]["BR"])
+
+        self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
+        self.AuraStatusTR:ClearAllPoints()
+        self.AuraStatusTR:SetPoint("TOPRIGHT", self.Health, 2, 0)
+        self.AuraStatusTR:SetFont(symbols, symbolsize, "OUTLINE")
+        self.AuraStatusTR.frequentUpdates = update
+        self:Tag(self.AuraStatusTR, classIndicators[class]["TR"])
+		
         self.AuraStatusTL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTL:ClearAllPoints()
         self.AuraStatusTL:SetPoint("TOPLEFT", self.Health, 0, 0)
@@ -272,31 +293,10 @@ local Enable = function(self)
         self.AuraStatusTL.frequentUpdates = update
         self:Tag(self.AuraStatusTL, classIndicators[class]["TL"])
 
-        self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
-        self.AuraStatusTR:ClearAllPoints()
-        self.AuraStatusTR:SetPoint("TOPRIGHT", self.Health, 1, 0)
-        self.AuraStatusTR:SetFont(symbols, indicatorsize, "THINOUTLINE")
-        self.AuraStatusTR.frequentUpdates = update
-        self:Tag(self.AuraStatusTR, classIndicators[class]["TR"])
-
-        self.AuraStatusBL = self.Health:CreateFontString(nil, "OVERLAY")
-        self.AuraStatusBL:ClearAllPoints()
-        self.AuraStatusBL:SetPoint("BOTTOMLEFT", self.Health, 0, 0)
-        self.AuraStatusBL:SetFont(symbols, indicatorsize, "THINOUTLINE")
-        self.AuraStatusBL.frequentUpdates = update
-        self:Tag(self.AuraStatusBL, classIndicators[class]["BL"])	
-
-        self.AuraStatusBR = self.Health:CreateFontString(nil, "OVERLAY")
-        self.AuraStatusBR:ClearAllPoints()
-        self.AuraStatusBR:SetPoint("BOTTOMRIGHT", self.Health, 6, -2)
-        self.AuraStatusBR:SetFont(symbols, symbolsize, "THINOUTLINE")
-        self.AuraStatusBR.frequentUpdates = update
-        self:Tag(self.AuraStatusBR, classIndicators[class]["BR"])
-
         self.AuraStatusCen = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusCen:SetPoint("LEFT", self, "LEFT", 0, 0)
         self.AuraStatusCen:SetJustifyH("LEFT")
-        self.AuraStatusCen:SetFont(cfg.font, fontsizeEdge, "OUTLINE")
+        self.AuraStatusCen:SetFont(cfg.font, fontsizeEdge, cfg.fontflag)
         self.AuraStatusCen:SetWidth(0)
         self.AuraStatusCen.frequentUpdates = update
         self:Tag(self.AuraStatusCen, classIndicators[class]["Cen"])
