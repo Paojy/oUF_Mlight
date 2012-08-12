@@ -321,16 +321,11 @@ local function Spawndpsraid()
 		'showSolo', cfg.showsolo,
 		'showParty', true,
 		'showRaid', true,
-		'xoffset', 5,
 		'yOffset', -5,
-		'point', "TOP",
 		'groupFilter', '1,2,3,4,5,6,7,8',
 		'groupingOrder', '1,2,3,4,5,6,7,8',
 		'groupBy', 'GROUP',
-		'maxColumns', 5,
-		'unitsPerColumn', 5,
-		'columnSpacing', 5,
-		'columnAnchorPoint', "TOP"
+		'unitsPerColumn', 25
 	)
 	dpsraid:SetPoint(unpack(cfg.dpsraidposition))
 end
