@@ -57,7 +57,7 @@ end
 oUF.Tags.Methods['Mlight:hp']  = function(u) 
     local min, max = UnitHealth(u), UnitHealthMax(u)
 	if min > 0 and max > 0 and min~=max then
-		return siValue(min).." "..hex(0.3, 0.8, 1)..math.floor(min/max*100+.5).."%|r"
+		return siValue(min).." "..hex(1, 0, 1).."'"..hex(1, 1, 0)..math.floor(min/max*100+.5).."|r"
 	end
 end
 oUF.Tags.Events['Mlight:hp'] = 'UNIT_HEALTH'
@@ -93,7 +93,7 @@ oUF.Tags.Events['Mlight:color'] = 'UNIT_REACTION UNIT_HEALTH'
 
 oUF.Tags.Methods['Mlight:shortname'] = function(u, r)
 	local name = UnitName(r or u)
-	return utf8sub(name, 5, false)
+	return utf8sub(name, 4, false)
 end
 oUF.Tags.Events['Mlight:shortname'] = 'UNIT_NAME_UPDATE'
 

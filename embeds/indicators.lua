@@ -267,18 +267,28 @@ local Enable = function(self)
     if(self.MlightIndicators) then
         self.AuraStatusBL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusBL:ClearAllPoints()
-        self.AuraStatusBL:SetPoint("BOTTOMLEFT", self.Health, 3, -2)
+        self.AuraStatusBL:SetPoint("BOTTOMLEFT", self.Health, 1, 2)
+		self.AuraStatusBL:SetJustifyH("LEFT")
         self.AuraStatusBL:SetFont(symbols, indicatorsize, "THINOUTLINE")
         self.AuraStatusBL.frequentUpdates = update
         self:Tag(self.AuraStatusBL, classIndicators[class]["BL"])	
 
 		self.AuraStatusBR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusBR:ClearAllPoints()
-        self.AuraStatusBR:SetPoint("BOTTOMRIGHT", self.Health, 3, 2)
+        self.AuraStatusBR:SetPoint("BOTTOMRIGHT", self.Health, 1, 2)
+		self.AuraStatusBR:SetJustifyH("RIGHT")
         self.AuraStatusBR:SetFont(symbols, indicatorsize, "THINOUTLINE")
         self.AuraStatusBR.frequentUpdates = update
         self:Tag(self.AuraStatusBR, classIndicators[class]["BR"])
-
+		
+        self.AuraStatusTL = self.Health:CreateFontString(nil, "OVERLAY")
+        self.AuraStatusTL:ClearAllPoints()
+        self.AuraStatusTL:SetPoint("TOPLEFT", self.Health, 1, -2)
+		self.AuraStatusTL:SetJustifyH("LEFT")
+        self.AuraStatusTL:SetFont(symbols, indicatorsize, "THINOUTLINE")
+        self.AuraStatusTL.frequentUpdates = update
+        self:Tag(self.AuraStatusTL, classIndicators[class]["TL"])
+		
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
         self.AuraStatusTR:SetPoint("TOPRIGHT", self.Health, 2, 0)
@@ -286,13 +296,6 @@ local Enable = function(self)
         self.AuraStatusTR.frequentUpdates = update
         self:Tag(self.AuraStatusTR, classIndicators[class]["TR"])
 		
-        self.AuraStatusTL = self.Health:CreateFontString(nil, "OVERLAY")
-        self.AuraStatusTL:ClearAllPoints()
-        self.AuraStatusTL:SetPoint("TOPLEFT", self.Health, 0, 0)
-        self.AuraStatusTL:SetFont(symbols, indicatorsize, "THINOUTLINE")
-        self.AuraStatusTL.frequentUpdates = update
-        self:Tag(self.AuraStatusTL, classIndicators[class]["TL"])
-
         self.AuraStatusCen = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusCen:SetPoint("LEFT", self, "LEFT", 0, 0)
         self.AuraStatusCen:SetJustifyH("LEFT")
