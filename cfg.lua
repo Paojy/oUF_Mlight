@@ -8,9 +8,8 @@ local cfg = CreateFrame("Frame")
 cfg.mediaPath = "Interface\\AddOns\\oUF_Mlight\\media\\"
 cfg.texture = "Interface\\Buttons\\WHITE8x8"
 cfg.highlighttexture = cfg.mediaPath.."highlight"
-cfg.font, cfg.fontflag = cfg.mediaPath.."font.TTF", "OUTLINE"--GameFontHighlight:GetFont(), "OUTLINE"
+cfg.font, cfg.fontflag = cfg.mediaPath.."font.TTF", "OUTLINE"
 cfg.glowTex = cfg.mediaPath.."grow"
-cfg.buttonTex = cfg.mediaPath.."buttontex"
 cfg.fontsize = 12
 
 -- color mode
@@ -80,7 +79,7 @@ end
   
 if IsAddOnLoaded("Aurora") and IsAddOnLoaded("aCore") then
 cfg.font = GameFontHighlight:GetFont()
-cfg.showsolo = false
+--cfg.showsolo = false
 end
 ---------------------------------------------------------------------------------------
 -------------------[[        Config        End        ]]-------------------------------  

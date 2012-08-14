@@ -3,7 +3,7 @@ local cfg = ns.cfg
 
 local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
 
-oUF.colors.power["MANA"] = {.9, .9, .9}
+oUF.colors.power["MANA"] = {.3, .8, 1}
 oUF.colors.power["RAGE"] = {.9, .1, .1}
 oUF.colors.power["FUEL"] = {0, 0.55, 0.5}
 oUF.colors.power["FOCUS"] = {.9, .5, .1}
@@ -281,17 +281,17 @@ local PostCreateIcon = function(auras, button)
     count:SetFont(cfg.font, 12, "OUTLINE")
     count:SetTextColor(.8, .8, .8)
 
-    button.icon:SetTexCoord(.1, .9, .1, .9)
+    button.icon:SetTexCoord(.07, .93, .07, .93)
 	
 	local bg = createBackdrop(button, button,0,3)
 	button.bg = bg
 	
     if cfg.auraborders then
         auras.showDebuffType = true
-        button.overlay:SetTexture(cfg.buttonTex)
-        button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -2, 2)
-        button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
-        button.overlay:SetTexCoord(0, 1, 0.02, 1)
+        button.overlay:SetTexture(cfg.texture)
+		button.overlay:SetDrawLayer("BACKGROUND")
+        button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
+        button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
     else
         button.overlay:Hide()
     end
@@ -512,6 +512,7 @@ end
 --[[                   Auras                 ]]--
 --=============================================--
 local CreateAuras = function(self, unit)
+	local u = unit:match('[^%d]+')
     if multicheck(u, "target", "focus", "pet", "boss") then
 		local Auras = CreateFrame("Frame", nil, self)
 		Auras:SetHeight(cfg.height*2)
@@ -520,7 +521,7 @@ local CreateAuras = function(self, unit)
 		Auras.PostCreateIcon = PostCreateIcon
 		Auras.PostUpdateIcon = PostUpdateIcon
 		Auras.PostUpdateGapIcon = PostUpdateGapIcon
-	
+
 		if unit == "target" or unit == "focus" then
 			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 5)
 			Auras.initialAnchor = "BOTTOMLEFT"
