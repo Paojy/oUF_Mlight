@@ -383,33 +383,6 @@ local HarmonyOverride = function(self, event, unit, powerType)
 	end
 end
 
-local SoulShardsOverride = function(self, event, unit, powerType)
-	if(self.unit ~= unit or (powerType and powerType ~= 'SOUL_SHARDS')) then return end
-	
-	local sholder = self.SoulShards
-	
-	local shard = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
-	local maxshard = UnitPowerMax("player", SPELL_POWER_SOUL_SHARDS)
-	
-	if not sholder.maxshard then sholder.maxshard = 4 end
-	
-	if sholder.maxshard ~= maxshard then
-		for i = 1, 4 do
-			sholder[i]:SetWidth((cfg.width+3)/maxshard-3)
-		end
-		
-		sholder.maxshard = maxshard
-	end
-
-	for i = 1, 4 do
-		if i <= shard then
-			sholder[i]:SetAlpha(1)
-		else
-			sholder[i]:SetAlpha(0)
-		end
-	end
-end
-
 local HolyPowerOverride = function(self, event, unit, powerType)
 	if(self.unit ~= unit or (powerType and powerType ~= 'HOLY_POWER')) then return end
 	
@@ -802,8 +775,7 @@ local UnitSpecific = {
                 bars[3], bars[4], bars[5], bars[6] = bars[5], bars[6], bars[3], bars[4]
                 self.Runes = bars
             elseif class == "WARLOCK" then
-                self.SoulShards = bars
-				self.SoulShards.Override = SoulShardsOverride
+                self.WarlockSpecBars = bars
             elseif class == "PALADIN" then
                 self.HolyPower = bars
 				self.HolyPower.Override = HolyPowerOverride
