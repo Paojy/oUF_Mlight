@@ -1,9 +1,9 @@
 ## Interface: 50001
 ## Title: oUF_Mlight
 ## Author: Blue
-## Version: 5.11
+## Version: 5.12
 ## Notes: oUF layout.
-## Credits:Freebaser, Haleth, Tukz
+## Credits:Haste, Freebaser, Monolit, Haleth, Phanx, Tukz, p3lim
 ## Dependencies: oUF
 ## OptionalDeps: oUF_Fader, aCore
 
