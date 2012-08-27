@@ -2,11 +2,11 @@
 
 local FormatValue = function(val)
     if (val >= 1e6) then
-        return ("%.1fm"):format(val / 1e6)
+        return ('%.1fm'):format(val / 1e6)
     elseif (val >= 1e3) then
-        return ("%.1fk"):format(val / 1e3)
+        return ('%.1fk'):format(val / 1e3)
     else
-        return ("%d"):format(val)
+        return ('%d'):format(val)
     end
 end
 ns.FormatValue = FormatValue
@@ -14,14 +14,14 @@ ns.FormatValue = FormatValue
 local day, hour, minute = 86400, 3600, 60
 local FormatTime = function(s)
     if s >= day then
-        return format("%dd", floor(s/day + 0.5))
+        return format('%dd', floor(s/day + 0.5))
     elseif s >= hour then
-        return format("%dh", floor(s/hour + 0.5))
+        return format('%dh', floor(s/hour + 0.5))
     elseif s >= minute then
-        return format("%dm", floor(s/minute + 0.5))
+        return format('%dm', floor(s/minute + 0.5))
     end
 
-    return format("%d", math.fmod(s, minute))
+    return format('%d', math.fmod(s, minute))
 end
 ns.FormatTime = FormatTime
 
@@ -57,7 +57,7 @@ local function utf8sub(string, i, dots)
 end
 
 local function hex(r, g, b)
-    if not r then return "|cffFFFFFF" end
+    if not r then return '|cffFFFFFF' end
 
     if(type(r) == 'table') then
         if(r.r) then r, g, b = r.r, r.g, r.b else r, g, b = unpack(r) end
@@ -69,7 +69,7 @@ ns.hex = hex
 --[[                 Tags                    ]]--
 --=============================================--
 oUF.Tags.Methods['Mlight:color'] = function(u, r)
-    local reaction = UnitReaction(u, "player")
+    local reaction = UnitReaction(u, 'player')
 
     if (UnitIsTapped(u) and not UnitIsTappedByPlayer(u)) then
         return hex(oUF.colors.tapped)
@@ -88,38 +88,42 @@ oUF.Tags.Methods['Mlight:shortname'] = function(u, r)
 	local name = UnitName(r or u)
 	return utf8sub(name, 4, false)
 end
-oUF.Tags.Events['Mlight:shortname'] = 'UNIT_NAME_UPDATE UNIT_CONNECTION'
 
+oUF.Tags.Methods['Mlight:raidname'] = function(u, r)
+	local name = UnitName(r or u)
+	return utf8sub(name, 4, false)
+end
+oUF.Tags.Events['Mlight:raidname'] = 'GROUP_ROSTER_UPDATE'
 --------------[[     raid     ]]-------------------
 
 oUF.Tags.Methods['Mlight:LFD'] = function(u) -- use symbols istead of letters
 	local role = UnitGroupRolesAssigned(u)
-	if role == "HEALER" then
-		return "|cff7CFC00H|r"
-	elseif role == "TANK" then
-		return "|cffF4A460T|r"
-	elseif role == "DAMAGER" then
-		return "|cffEEEE00D|r"
+	if role == 'HEALER' then
+		return '|cff7CFC00H|r'
+	elseif role == 'TANK' then
+		return '|cffF4A460T|r'
+	elseif role == 'DAMAGER' then
+		return '|cffEEEE00D|r'
 	end
 end
-oUF.Tags.Events['Mlight:LFD'] = "GROUP_ROSTER_UPDATE PLAYER_ROLES_ASSIGNED"
+oUF.Tags.Events['Mlight:LFD'] = 'GROUP_ROSTER_UPDATE PLAYER_ROLES_ASSIGNED'
 
 oUF.Tags.Methods['Mlight:AfkDnd'] = function(u)
 	if UnitIsAFK(u) then
-		return "|cff9FB6CD <afk>|r"
+		return '|cff9FB6CD <afk>|r'
 	elseif UnitIsDND(u) then
-		return "|cffCD2626 <dnd>|r"
+		return '|cffCD2626 <dnd>|r'
 	end
 end
 oUF.Tags.Events['Mlight:AfkDnd'] = 'PLAYER_FLAGS_CHANGED'
 
 oUF.Tags.Methods['Mlight:DDG'] = function(u)
 	if UnitIsDead(u) then
-		return "|cffCD0000  Dead|r"
+		return '|cffCD0000  Dead|r'
 	elseif UnitIsGhost(u) then
-		return "|cffBFEFFF  Ghost|r"
+		return '|cffBFEFFF  Ghost|r'
 	elseif not UnitIsConnected(u) then
-		return "|cffCCCCCC  D/C|r"
+		return '|cffCCCCCC  D/C|r'
 	end
 end
 oUF.Tags.Events['Mlight:DDG'] = 'UNIT_HEALTH UNIT_CONNECTION'
