@@ -20,42 +20,42 @@ local day, hour, minute = 86400, 3600, 60
 
 local FormatTime = function(s)
     if s >= day then
-        return format("%dd", floor(s/day + 0.5))
+        return format('%dd', floor(s/day + 0.5))
     elseif s >= hour then
-        return format("%dh", floor(s/hour + 0.5))
+        return format('%dh', floor(s/hour + 0.5))
     elseif s >= minute then
-        return format("%dm", floor(s/minute + 0.5))
+        return format('%dm', floor(s/minute + 0.5))
     end
 
-    return format("%d", fmod(s, minute))
+    return format('%d', fmod(s, minute))
 end
 
 local CreateAuraIcon = function(auras)
-    local button = CreateFrame("Button", nil, auras)
+    local button = CreateFrame('Button', nil, auras)
     button:EnableMouse(false)
     button:SetAllPoints(auras)
 
-    local icon = button:CreateTexture(nil, "OVERLAY")
+    local icon = button:CreateTexture(nil, 'ARTWORK')
     icon:SetAllPoints(button)
     icon:SetTexCoord(.07, .93, .07, .93)
 
     local font = cfg.font
-    local count = button:CreateFontString(nil, "OVERLAY")
-    count:SetFont(font, auras.cfontsize, "THINOUTLINE")
-    count:SetPoint("TOPRIGHT")
+    local count = button:CreateFontString(nil, 'OVERLAY')
+    count:SetFont(font, auras.cfontsize, 'THINOUTLINE')
+    count:SetPoint('TOPRIGHT')
 
-    local border = CreateFrame("Frame", nil, button)
-    border:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
-    border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
+    local border = CreateFrame('Frame', nil, button)
+    border:SetPoint('TOPLEFT', button, 'TOPLEFT', -1, 1)
+    border:SetPoint('BOTTOMRIGHT', button, 'BOTTOMRIGHT', 1, -1)
     border:SetFrameLevel(4)
     border:SetBackdrop(glowBorder)
     border:SetBackdropColor(0,0,0,1)
     border:SetBackdropBorderColor(0,0,0,1)
     button.border = border
 
-    local remaining = button:CreateFontString(nil, "OVERLAY")
-    remaining:SetPoint("BOTTOMRIGHT",4,-2) 
-    remaining:SetFont(font, auras.tfontsize, "THINOUTLINE")
+    local remaining = button:CreateFontString(nil, 'OVERLAY')
+    remaining:SetPoint('BOTTOMRIGHT',4,-2) 
+    remaining:SetFont(font, auras.tfontsize, 'THINOUTLINE')
     remaining:SetTextColor(1, 1, 0)
     button.remaining = remaining
 
@@ -77,36 +77,36 @@ local dispelClass = {
     MONK = { Disease = true, Poison = true, },
 }
  
-local _, class = UnitClass("player")
-local checkTalents = CreateFrame"Frame"
-checkTalents:RegisterEvent"PLAYER_ENTERING_WORLD"
-checkTalents:RegisterEvent"ACTIVE_TALENT_GROUP_CHANGED"
-checkTalents:RegisterEvent"CHARACTER_POINTS_CHANGED"
+local _, class = UnitClass('player')
+local checkTalents = CreateFrame'Frame'
+checkTalents:RegisterEvent'PLAYER_ENTERING_WORLD'
+checkTalents:RegisterEvent'ACTIVE_TALENT_GROUP_CHANGED'
+checkTalents:RegisterEvent'CHARACTER_POINTS_CHANGED'
  
-checkTalents:SetScript("OnEvent", function(self, event)
-    if multicheck(class, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK") then
+checkTalents:SetScript('OnEvent', function(self, event)
+    if multicheck(class, 'SHAMAN', 'PALADIN', 'DRUID', 'PRIEST', 'MONK') then
  
-        if class == "SHAMAN" then
+        if class == 'SHAMAN' then
             local tree = GetSpecialization()
  
             dispelClass[class].Magic = tree == 1 and true
  
-        elseif class == "PALADIN" then
+        elseif class == 'PALADIN' then
             local tree = GetSpecialization()
  
             dispelClass[class].Magic = tree == 1 and true
  
-        elseif class == "DRUID" then
+        elseif class == 'DRUID' then
             local tree = GetSpecialization()
  
             dispelClass[class].Magic = tree == 1 and true
  
-        elseif class == "PRIEST" then
+        elseif class == 'PRIEST' then
             local tree = GetSpecialization()
             
             dispelClass[class].Magic = (tree == 1 or tree == 2) and true
             
-        elseif class == "MONK" then
+        elseif class == 'MONK' then
             local tree = GetSpecialization()
  
             dispelClass[class].Magic = tree == 2 and true
@@ -114,8 +114,8 @@ checkTalents:SetScript("OnEvent", function(self, event)
         end
     end
  
-    if event == "PLAYER_ENTERING_WORLD" then
-        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+    if event == 'PLAYER_ENTERING_WORLD' then
+        self:UnregisterEvent('PLAYER_ENTERING_WORLD')
     end
 end)
 
@@ -146,19 +146,19 @@ local zoneDelay = function(self, elapsed)
         instDebuffs = {}
     end
 
-    self:SetScript("OnUpdate", nil)
+    self:SetScript('OnUpdate', nil)
     delaytimer = 0
 end
 
-local getZone = CreateFrame"Frame"
-getZone:RegisterEvent"PLAYER_ENTERING_WORLD"
-getZone:RegisterEvent"ZONE_CHANGED_NEW_AREA"
-getZone:SetScript("OnEvent", function(self, event)
+local getZone = CreateFrame'Frame'
+getZone:RegisterEvent'PLAYER_ENTERING_WORLD'
+getZone:RegisterEvent'ZONE_CHANGED_NEW_AREA'
+getZone:SetScript('OnEvent', function(self, event)
     -- Delay just in case zone data hasn't loaded
-    self:SetScript("OnUpdate", zoneDelay)
+    self:SetScript('OnUpdate', zoneDelay)
 
-    if event == "PLAYER_ENTERING_WORLD" then
-        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+    if event == 'PLAYER_ENTERING_WORLD' then
+        self:UnregisterEvent('PLAYER_ENTERING_WORLD')
     end
 end)
 
@@ -236,9 +236,9 @@ local updateDebuff = function(backdrop, icon, texture, count, dtype, duration, e
     icon.duration = duration
 
     if icon.asc then
-        icon:SetScript("OnUpdate", AuraTimerAsc)
+        icon:SetScript('OnUpdate', AuraTimerAsc)
     else
-        icon:SetScript("OnUpdate", AuraTimer)
+        icon:SetScript('OnUpdate', AuraTimer)
     end
 end
 
@@ -288,7 +288,7 @@ local Enable = function(self)
 
     if(auras) then
         auras.button = CreateAuraIcon(auras)
-        self:RegisterEvent("UNIT_AURA", Update)
+        self:RegisterEvent('UNIT_AURA', Update)
         return true
     end
 end
@@ -297,7 +297,7 @@ local Disable = function(self)
     local auras = self.MlightAuras
 
     if(auras) then
-        self:UnregisterEvent("UNIT_AURA", Update)
+        self:UnregisterEvent('UNIT_AURA', Update)
     end
 end
 
