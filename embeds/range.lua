@@ -21,8 +21,8 @@ local abs = math.abs
 local floor = floor
 
 local function ColorGradient(perc, ...)
-    local num = select('#', ...)
-    local hexes = type(select(1, ...)) == 'string'
+    local num = select("#", ...)
+    local hexes = type(select(1, ...)) == "string"
 
     if perc == 1 then
         return select(num-2, ...), select(num-1, ...), select(num, ...)
@@ -80,11 +80,11 @@ local px, py, tx, ty
 local function GetBearing(unit)
     if unit == 'player' then return end
 
-    px, py = GetPlayerMapPosition('player')
+    px, py = GetPlayerMapPosition("player")
     if((px or 0)+(py or 0) <= 0) then
         if WorldMapFrame:IsVisible() then return end
         SetMapToCurrentZone()
-        px, py = GetPlayerMapPosition('player')
+        px, py = GetPlayerMapPosition("player")
         if((px or 0)+(py or 0) <= 0) then return end
     end
 
@@ -137,29 +137,29 @@ local Enable = function(self)
         table.insert(_FRAMES, self)
 
         if(not OnRangeFrame) then
-            OnRangeFrame = CreateFrame'Frame'
-            OnRangeFrame:SetScript('OnUpdate', OnRangeUpdate)
+            OnRangeFrame = CreateFrame"Frame"
+            OnRangeFrame:SetScript("OnUpdate", OnRangeUpdate)
         end
         OnRangeFrame:Show()
 
-        local frame = CreateFrame('Frame', nil, UIParent)
+        local frame = CreateFrame("Frame", nil, UIParent)
         frame:SetAllPoints(self)
-        frame:SetFrameStrata('HIGH')
+        frame:SetFrameStrata("HIGH")
         frame:SetScale(cfg.arrowscale)
 
-        frame.arrow = frame:CreateTexture(nil, 'OVERLAY')
-        frame.arrow:SetTexture'Interface\\Addons\\oUF_Mlight\\media\\Arrow'
-        frame.arrow:SetPoint('TOPRIGHT', frame, 'TOPRIGHT')
+        frame.arrow = frame:CreateTexture(nil, "OVERLAY")
+        frame.arrow:SetTexture"Interface\\Addons\\oUF_Mlight\\media\\Arrow"
+        frame.arrow:SetPoint("TOPRIGHT", frame, "TOPRIGHT")
         frame.arrow:SetSize(24, 24)
 
         self.freebarrow = frame
         self.freebarrow:Hide()
 		
-		self:HookScript('OnEnter', function(self)
+		self:HookScript("OnEnter", function(self)
 			ns:arrow(self, self.unit) 
 		end)
 		
-		self:HookScript('OnLeave', function(self)
+		self:HookScript("OnLeave", function(self)
 		    if(self.freebarrow and self.freebarrow:IsShown()) then
 				self.freebarrow:Hide()
 			end 

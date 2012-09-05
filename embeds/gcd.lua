@@ -2,24 +2,24 @@
 local ADDON_NAME, ns = ...
 
 classgcdspells ={
-    ['DRUID'] = 5176, -- Wrath
-    ['PRIEST'] = 585, -- Smite 
-    ['PALADIN'] = 19740, -- Blessing of Might
-    ['WARLOCK'] = 172, -- Corruption 
-    ['WARRIOR'] = 772, -- Rend
-    ['DEATHKNIGHT'] = 49892, -- Death Coil
-    ['SHAMAN'] = 331, -- Healing Wave
-    ['HUNTER'] = 1978, -- Serpent Sting 
-    ['ROGUE'] = 1752, -- Sinister Strike
-    ['MAGE'] = 5504, -- Conjure Water
-	['MONK'] = 115178, -- Resuscitate
+    ["DRUID"] = 5176, -- Wrath
+    ["PRIEST"] = 585, -- Smite 
+    ["PALADIN"] = 19740, -- Blessing of Might
+    ["WARLOCK"] = 172, -- Corruption 
+    ["WARRIOR"] = 772, -- Rend
+    ["DEATHKNIGHT"] = 49892, -- Death Coil
+    ["SHAMAN"] = 331, -- Healing Wave
+    ["HUNTER"] = 1978, -- Serpent Sting 
+    ["ROGUE"] = 1752, -- Sinister Strike
+    ["MAGE"] = 5504, -- Conjure Water
+	["MONK"] = 115178, -- Resuscitate
 }
 
 local GetTime = GetTime
 local GetSpellCooldown = GetSpellCooldown
 local gcdisshown
 
-local _, class = UnitClass('player')
+local _, class = UnitClass("player")
 local spellid = classgcdspells[class]
 
 local OnUpdateGCD = function(self)
@@ -69,8 +69,8 @@ local Enable = function(self)
 		self.GCD.starttime = 0
 		self.GCD.duration = 0
 	
-		self:HookScript('OnEnter', function(self) self.showgcd = true end)
-		self:HookScript('OnLeave', function(self) self.showgcd = false end)
+		self:HookScript("OnEnter", function(self) self.showgcd = true end)
+		self:HookScript("OnLeave", function(self) self.showgcd = false end)
 
 		self:RegisterEvent('ACTIONBAR_UPDATE_COOLDOWN', Update)
 		self.GCD:SetScript('OnHide', OnHideGCD)

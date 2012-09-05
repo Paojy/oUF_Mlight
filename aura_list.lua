@@ -56,7 +56,7 @@ ns.auras = {
 
     -- Raid Debuffs
     instances = {
-        --['MapID'] = {
+        --["MapID"] = {
         --	[Name or GetSpellInfo(spellID) or SpellID] = PRIORITY,
         --},
 		

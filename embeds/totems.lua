@@ -50,7 +50,7 @@ local UpdateTotem = function(self, event, slot)
 			totem:Show()
 			totem:SetValue(1 - ((GetTime() - startTime) / duration))	
 			-- Status bar update
-			totem:SetScript('OnUpdate',function(self,elapsed)
+			totem:SetScript("OnUpdate",function(self,elapsed)
 					total = total + elapsed
 					if total >= delay then
 						total = 0
@@ -64,7 +64,7 @@ local UpdateTotem = function(self, event, slot)
 				end)					
 		else
 			-- There's no need to update because it doesn't have any duration
-			totem:SetScript('OnUpdate',nil)
+			totem:SetScript("OnUpdate",nil)
 			totem:Hide()
 			totem:SetValue(0)
 		end 
@@ -124,10 +124,10 @@ local Enable = function(self)
 		TotemFrame.Show = TotemFrame.Hide
 		TotemFrame:Hide()
 
-		TotemFrame:UnregisterEvent'PLAYER_TOTEM_UPDATE'
-		TotemFrame:UnregisterEvent'PLAYER_ENTERING_WORLD'
-		TotemFrame:UnregisterEvent'UPDATE_SHAPESHIFT_FORM'
-		TotemFrame:UnregisterEvent'PLAYER_TALENT_UPDATE'
+		TotemFrame:UnregisterEvent"PLAYER_TOTEM_UPDATE"
+		TotemFrame:UnregisterEvent"PLAYER_ENTERING_WORLD"
+		TotemFrame:UnregisterEvent"UPDATE_SHAPESHIFT_FORM"
+		TotemFrame:UnregisterEvent"PLAYER_TALENT_UPDATE"
 
 		return true
 	end
@@ -138,13 +138,13 @@ local Disable = function(self)
 		TotemFrame.Show = nil
 		TotemFrame:Show()
 
-		TotemFrame:RegisterEvent'PLAYER_TOTEM_UPDATE'
-		TotemFrame:RegisterEvent'PLAYER_ENTERING_WORLD'
-		TotemFrame:RegisterEvent'UPDATE_SHAPESHIFT_FORM'
-		TotemFrame:RegisterEvent'PLAYER_TALENT_UPDATE'
+		TotemFrame:RegisterEvent"PLAYER_TOTEM_UPDATE"
+		TotemFrame:RegisterEvent"PLAYER_ENTERING_WORLD"
+		TotemFrame:RegisterEvent"UPDATE_SHAPESHIFT_FORM"
+		TotemFrame:RegisterEvent"PLAYER_TALENT_UPDATE"
 
 		self:UnregisterEvent('PLAYER_TOTEM_UPDATE', Path)
 	end
 end
 
-oUF:AddElement('TotemBar', Update, Enable, Disable)
+oUF:AddElement("TotemBar", Update, Enable, Disable)

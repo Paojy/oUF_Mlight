@@ -13,42 +13,42 @@ local day, hour, minute = 86400, 3600, 60
 
 local FormatTime = function(s)
     if s >= day then
-        return format('%dd', floor(s/day + 0.5))
+        return format("%dd", floor(s/day + 0.5))
     elseif s >= hour then
-        return format('%dh', floor(s/hour + 0.5))
+        return format("%dh", floor(s/hour + 0.5))
     elseif s >= minute then
-        return format('%dm', floor(s/minute + 0.5))
+        return format("%dm", floor(s/minute + 0.5))
     end
 
-    return format('%d', fmod(s, minute))
+    return format("%d", fmod(s, minute))
 end
 
 local CreateAuraIcon = function(auras)
-    local button = CreateFrame('Button', nil, auras)
+    local button = CreateFrame("Button", nil, auras)
     button:EnableMouse(false)
     button:SetAllPoints(auras)
 
-    local icon = button:CreateTexture(nil, 'ARTWORK')
+    local icon = button:CreateTexture(nil, "OVERLAY")
     icon:SetAllPoints(button)
     icon:SetTexCoord(.07, .93, .07, .93)
 
     local font = cfg.font
-    local count = button:CreateFontString(nil, 'OVERLAY')
-    count:SetFont(font, auras.cfontsize, 'THINOUTLINE')
-    count:SetPoint('TOPRIGHT')
+    local count = button:CreateFontString(nil, "OVERLAY")
+    count:SetFont(font, auras.cfontsize, "THINOUTLINE")
+    count:SetPoint("TOPRIGHT")
 
-    local border = CreateFrame('Frame', nil, button)
-    border:SetPoint('TOPLEFT', button, 'TOPLEFT', -1, 1)
-    border:SetPoint('BOTTOMRIGHT', button, 'BOTTOMRIGHT', 1, -1)
+    local border = CreateFrame("Frame", nil, button)
+    border:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
+    border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
     border:SetFrameLevel(4)
     border:SetBackdrop(glowBorder)
     border:SetBackdropColor(0,0,0,1)
     border:SetBackdropBorderColor(0,0,0,1)
     button.border = border
 
-    local remaining = button:CreateFontString(nil, 'OVERLAY')
-    remaining:SetPoint('BOTTOMRIGHT',4,-2) 
-    remaining:SetFont(font, auras.tfontsize, 'THINOUTLINE')
+    local remaining = button:CreateFontString(nil, "OVERLAY")
+    remaining:SetPoint("BOTTOMRIGHT",4,-2) 
+    remaining:SetFont(font, auras.tfontsize, "THINOUTLINE")
     remaining:SetTextColor(1, 1, 0)
     button.remaining = remaining
 
@@ -103,7 +103,7 @@ local updateDebuff = function(icon, texture, count, dtype, duration, expires, bu
     icon.expires = expires
     icon.duration = duration
 
-    icon:SetScript('OnUpdate', AuraTimer)
+    icon:SetScript("OnUpdate", AuraTimer)
 end
 
 local Update = function(self, event, unit)
@@ -150,7 +150,7 @@ local Enable = function(self)
 
     if(auras) then
         auras.button = CreateAuraIcon(auras)
-        self:RegisterEvent('UNIT_AURA', Update)
+        self:RegisterEvent("UNIT_AURA", Update)
         return true
     end
 end
@@ -159,7 +159,7 @@ local Disable = function(self)
     local auras = self.MlightTankbuff
 
     if(auras) then
-        self:UnregisterEvent('UNIT_AURA', Update)
+        self:UnregisterEvent("UNIT_AURA", Update)
     end
 end
 

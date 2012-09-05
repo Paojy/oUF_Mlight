@@ -1,5 +1,5 @@
 -- by tukz
-if select(2, UnitClass('player')) ~= 'WARLOCK' then return end
+if select(2, UnitClass("player")) ~= "WARLOCK" then return end
 
 local MAX_POWER_PER_EMBER = 10
 local SPELL_POWER_DEMONIC_FURY = SPELL_POWER_DEMONIC_FURY
@@ -13,7 +13,7 @@ local SPEC_WARLOCK_DEMONOLOGY = SPEC_WARLOCK_DEMONOLOGY
 local LATEST_SPEC = 0
 
 local Update = function(self, event, unit, powerType)
-	if(event ~= 'PLAYER_TALENT_UPDATE' and (self.unit ~= unit or (powerType and powerType ~= 'BURNING_EMBERS' and powerType ~= 'SOUL_SHARDS' and powerType ~= 'DEMONIC_FURY'))) then return end
+	if(event ~= "PLAYER_TALENT_UPDATE" and (self.unit ~= unit or (powerType and powerType ~= "BURNING_EMBERS" and powerType ~= "SOUL_SHARDS" and powerType ~= "DEMONIC_FURY"))) then return end
 	
 	local wsb = self.WarlockSpecBars
 	if(wsb.PreUpdate) then wsb:PreUpdate(unit) end
@@ -22,8 +22,8 @@ local Update = function(self, event, unit, powerType)
 	
 	if spec then
 		if (spec == SPEC_WARLOCK_DESTRUCTION) then	
-			local maxPower = UnitPowerMax('player', SPELL_POWER_BURNING_EMBERS, true)
-			local power = UnitPower('player', SPELL_POWER_BURNING_EMBERS, true)
+			local maxPower = UnitPowerMax("player", SPELL_POWER_BURNING_EMBERS, true)
+			local power = UnitPower("player", SPELL_POWER_BURNING_EMBERS, true)
 			local numEmbers = power / MAX_POWER_PER_EMBER
 			local numBars = floor(maxPower / MAX_POWER_PER_EMBER)
 			
@@ -32,8 +32,8 @@ local Update = function(self, event, unit, powerType)
 				wsb[i]:SetValue(power)
 			end
 		elseif ( spec == SPEC_WARLOCK_AFFLICTION ) then
-			local numShards = UnitPower('player', SPELL_POWER_SOUL_SHARDS)
-			local maxShards = UnitPowerMax('player', SPELL_POWER_SOUL_SHARDS)
+			local numShards = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
+			local maxShards = UnitPowerMax("player", SPELL_POWER_SOUL_SHARDS)
 			
 			for i = 1, maxShards do
 				if i <= numShards then
@@ -43,8 +43,8 @@ local Update = function(self, event, unit, powerType)
 				end
 			end
 		elseif spec == SPEC_WARLOCK_DEMONOLOGY then
-			local power = UnitPower('player', SPELL_POWER_DEMONIC_FURY)
-			local maxPower = UnitPowerMax('player', SPELL_POWER_DEMONIC_FURY)
+			local power = UnitPower("player", SPELL_POWER_DEMONIC_FURY)
+			local maxPower = UnitPowerMax("player", SPELL_POWER_DEMONIC_FURY)
 						
 			wsb[1]:SetMinMaxValues(0, maxPower)
 			wsb[1]:SetValue(power)
@@ -127,7 +127,7 @@ local Path = function(self, ...)
 end
 
 local ForceUpdate = function(element)
-	return Path(element.__owner, 'ForceUpdate', element.__owner.unit, 'SOUL_SHARDS')
+	return Path(element.__owner, "ForceUpdate", element.__owner.unit, "SOUL_SHARDS")
 end
 
 local function Enable(self)
@@ -136,14 +136,14 @@ local function Enable(self)
 		wsb.__owner = self
 		wsb.ForceUpdate = ForceUpdate
 
-		self:RegisterEvent('UNIT_POWER', Path)
-		self:RegisterEvent('UNIT_DISPLAYPOWER', Path)
-		self:RegisterEvent('PLAYER_TALENT_UPDATE', Path)
+		self:RegisterEvent("UNIT_POWER", Path)
+		self:RegisterEvent("UNIT_DISPLAYPOWER", Path)
+		self:RegisterEvent("PLAYER_TALENT_UPDATE", Path)
 		
-		wsb.Visibility = CreateFrame('Frame', nil, wsb)
-		wsb.Visibility:RegisterEvent('PLAYER_TALENT_UPDATE')
-		wsb.Visibility:RegisterEvent('PLAYER_ENTERING_WORLD')
-		wsb.Visibility:SetScript('OnEvent', function(frame, event, unit) Visibility(self, event, unit) end)
+		wsb.Visibility = CreateFrame("Frame", nil, wsb)
+		wsb.Visibility:RegisterEvent("PLAYER_TALENT_UPDATE")
+		wsb.Visibility:RegisterEvent("PLAYER_ENTERING_WORLD")
+		wsb.Visibility:SetScript("OnEvent", function(frame, event, unit) Visibility(self, event, unit) end)
 		
 		wsb:Hide()
 
@@ -154,13 +154,13 @@ end
 local function Disable(self)
 	local wsb = self.WarlockSpecBars
 	if(wsb) then
-		self:UnregisterEvent('UNIT_POWER', Path)
-		self:UnregisterEvent('UNIT_DISPLAYPOWER', Path)
-		self:UnregisterEvent('PLAYER_TALENT_UPDATE', Path)
+		self:UnregisterEvent("UNIT_POWER", Path)
+		self:UnregisterEvent("UNIT_DISPLAYPOWER", Path)
+		self:UnregisterEvent("PLAYER_TALENT_UPDATE", Path)
 		
-		wsb.Visibility:UnregisterEvent('PLAYER_TALENT_UPDATE')
-		wsb.Visibility:UnregisterEvent('PLAYER_ENTERING_WORLD')
+		wsb.Visibility:UnregisterEvent("PLAYER_TALENT_UPDATE")
+		wsb.Visibility:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 end
 
-oUF:AddElement('WarlockSpecBars', Path, Enable, Disable)
+oUF:AddElement("WarlockSpecBars", Path, Enable, Disable)
