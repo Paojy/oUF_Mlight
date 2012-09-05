@@ -15,7 +15,7 @@ cfg.fontsize = 12
 -- color mode
 -- health colored based on class/disable to make health colored based on percentage
 -- power colored based on power type/disable to make power colored based on class
-cfg.classcolormode = true
+cfg.classcolormode = false
 
 -- size
 cfg.height, cfg.width = 16, 230--height and width for player,focus and target

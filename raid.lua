@@ -151,7 +151,7 @@ local func = function(self, unit)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
     self.Leader = leader
 
-    local masterlooter = hp:CreateTexture(nil, 'OVERLAY'", 1)
+    local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
     masterlooter:SetSize(12, 12)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
