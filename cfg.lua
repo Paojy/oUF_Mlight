@@ -46,7 +46,7 @@ cfg.auraborders = true -- auraborder colored based on debuff type
 cfg.auraperrow = 9 -- number of auras each row, this control the size of icon
 cfg.playerdebuff = { 
 	enable = true, -- show debuffs on playerframe ?
-	num = 5, -- number of auras each row, this control the size of icon
+	num = 7, -- number of auras each row, this control the size of icon
 }
 cfg.AuraFilter = { -- target and focus
 	ignoreBuff = false, -- hide others' buff on friend
