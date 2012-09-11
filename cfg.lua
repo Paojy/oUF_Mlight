@@ -12,10 +12,11 @@ cfg.font, cfg.fontflag = cfg.mediaPath.."font.TTF", "OUTLINE"
 cfg.glowTex = cfg.mediaPath.."grow"
 cfg.fontsize = 12
 
--- color mode
--- health colored based on class/disable to make health colored based on percentage
--- power colored based on power type/disable to make power colored based on class
-cfg.classcolormode = false
+-- health/power
+cfg.classcolormode = false  -- true  : health colored based on class, power colored based on powertype
+						   -- flase : health colored based on health percentage, power colored based on class
+cfg.tranparentmode = true -- transparent unit frames?
+cfg.nameclasscolormode = true -- classcolor/white?
 
 -- size
 cfg.height, cfg.width = 16, 230--height and width for player,focus and target
@@ -43,6 +44,10 @@ cfg.uninterruptable = {1, 0, 0, 0.1}
 cfg.auras = true  -- disable all auras
 cfg.auraborders = true -- auraborder colored based on debuff type
 cfg.auraperrow = 9 -- number of auras each row, this control the size of icon
+cfg.playerdebuff = { 
+	enable = true, -- show debuffs on playerframe ?
+	num = 5, -- number of auras each row, this control the size of icon
+}
 cfg.AuraFilter = { -- target and focus
 	ignoreBuff = false, -- hide others' buff on friend
 	ignoreDebuff = false, -- hide others' debuff on enemy
