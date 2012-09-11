@@ -59,10 +59,10 @@ local function healpreditionbar(self, color)
 	hpb:SetStatusBarColor(unpack(color))
 	hpb:SetPoint('TOP')
 	hpb:SetPoint('BOTTOM')
-	if cfg.classcolormode then
-		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-	else
+	if cfg.tranparentmode then
 		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+	else
+		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
 	end
 	hpb:SetWidth(200)
 	return hpb
@@ -106,10 +106,10 @@ local func = function(self, unit)
 	self.bg = self:CreateTexture(nil, "BACKGROUND")
     self.bg:SetAllPoints()
     self.bg:SetTexture(cfg.texture)
-	if cfg.classcolormode then
-		self.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
+	if cfg.tranparentmode then
+		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
 	else
-		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .4, .1, .1, .1, .4)
+		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
 	end
 	
 	-- border --
@@ -129,7 +129,7 @@ local func = function(self, unit)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
 	
-	if not cfg.classcolormode then
+	if cfg.tranparentmode then
 		hp:SetReverseFill(true)
 	end
 	
@@ -167,7 +167,7 @@ local func = function(self, unit)
 	
 	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1)
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
-	if not cfg.classcolormode then
+	if cfg.nameclasscolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
 	else
 		self:Tag(raidname, '[Mlight:raidname]')
@@ -243,10 +243,10 @@ local dfunc = function(self, unit)
 	self.bg = self:CreateTexture(nil, "BACKGROUND")
     self.bg:SetAllPoints()
     self.bg:SetTexture(cfg.texture)
-	if cfg.classcolormode then
-		self.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
+	if cfg.tranparentmode then
+		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
 	else
-		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .4, .1, .1, .1, .4)
+		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
 	end
 	
 	-- border --
@@ -257,7 +257,7 @@ local dfunc = function(self, unit)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
 	
-	if not cfg.classcolormode then
+	if cfg.tranparentmode then
 		hp:SetReverseFill(true)
 	end
 	
@@ -285,7 +285,7 @@ local dfunc = function(self, unit)
 		
 	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1, 'RIGHT')
 	raidname:SetPoint"CENTER"
-	if not cfg.classcolormode then
+	if cfg.nameclasscolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
 	else
 		self:Tag(raidname, '[Mlight:raidname]')
