@@ -547,7 +547,7 @@ local CreateDebuffs = function(self, unit)
 		Debuff.PostCreateIcon = PostCreateIcon
 		Debuff.PostUpdateIcon = PostUpdateIcon
 	    if cfg.playerdebuff.enable and unit == "player" then
-			Debuff:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 12)
+			Debuff:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 8)
 			Debuff.initialAnchor = "BOTTOMLEFT"
 			Debuff["growth-x"] = "RIGHT"
 			Debuff["growth-y"] = "UP"
@@ -561,7 +561,7 @@ local CreateDebuffs = function(self, unit)
 			Debuff.size = (cfg.width+3)/cfg.auraperrow-3
 			Debuff.num = 5
 		end
-		self.Debuff = Debuff
+		self.Debuffs = Debuff
 	end
 end
 --=============================================--
