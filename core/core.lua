@@ -1,7 +1,8 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+local addon, ns = ...
 
 local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
+local texture = "Interface\\Buttons\\WHITE8x8"
+local highlighttexture = "Interface\\AddOns\\oUF_Mlight\\media\\highlight"
 
 oUF.colors.power["MANA"] = {.3, .8, 1}
 oUF.colors.power["RAGE"] = {.9, .1, .1}
@@ -30,7 +31,7 @@ local backdrop = {
 }
 
 local frameBD = {
-    edgeFile = cfg.glowTex, edgeSize = 3,
+    edgeFile = [=[Interface\AddOns\oUF_Mlight\media\grow]=], edgeSize = 3,
     bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
     insets = {left = 3, right = 3, top = 3, bottom = 3}
 }
@@ -104,7 +105,7 @@ ns.createFont = createFont
 --=============================================--
 --[[    Dropdown menu and MouseOn update     ]]--
 --=============================================--
-local dropdown = CreateFrame("Frame", ADDON_NAME .. "DropDown", UIParent, "UIDropDownMenuTemplate")
+local dropdown = CreateFrame("Frame", addon .. "DropDown", UIParent, "UIDropDownMenuTemplate")
 
 local menu = function(self)
     dropdown:SetParent(self)
@@ -194,20 +195,20 @@ local Updatehealthbar = function(self, unit, min, max)
 		r, g, b = 1, 0, 0
 	elseif (unit == "pet") then
 		local _, playerclass = UnitClass("player")
-		if cfg.classcolormode then
+		if oUF_MlightDB.classcolormode then
 			r, g, b = unpack(oUF.colors.class[playerclass])
 		else
 			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	elseif(UnitIsPlayer(unit)) then
 		local _, unitclass = UnitClass(unit)
-		if cfg.classcolormode then
+		if oUF_MlightDB.classcolormode then
 			if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
 		else
 			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	elseif unit then
-		if cfg.classcolormode then
+		if oUF_MlightDB.classcolormode then
 			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
 		else
 			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
@@ -216,7 +217,7 @@ local Updatehealthbar = function(self, unit, min, max)
 
 	self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
 	
-	if cfg.tranparentmode then
+	if oUF_MlightDB.transparentmode then
 		self:SetValue(max - self:GetValue()) 
 	end
 end
@@ -241,7 +242,7 @@ local Updatepowerbar = function(self, unit, min, max)
 		end
 	end
 	
-	if cfg.classcolormode then
+	if oUF_MlightDB.classcolormode then
 		r, g, b = unpack(powercolor)
 	elseif(UnitIsPlayer(unit)) then
 		local _, unitclass = UnitClass(unit)
@@ -291,7 +292,7 @@ local HarmonyOverride = function(self, event, unit, powerType)
 	
 	if cholder.maxchi ~= maxchi then
 		for i = 1, 5 do
-			cholder[i]:SetWidth((cfg.width+3)/maxchi-3)
+			cholder[i]:SetWidth((oUF_MlightDB.width+3)/maxchi-3)
 		end
 		
 		cholder.maxchi = maxchi
@@ -318,7 +319,7 @@ local HolyPowerOverride = function(self, event, unit, powerType)
 	
 	if hholder.maxholypower ~= maxholypower then
 		for i = 1, 5 do
-			hholder[i]:SetWidth((cfg.width+3)/maxholypower-3)
+			hholder[i]:SetWidth((oUF_MlightDB.width+3)/maxholypower-3)
 		end
 		
 		hholder.maxholypower = maxholypower
@@ -336,7 +337,7 @@ end
 --[[                 Castbars                ]]--
 --=============================================--
 local PostCastStart = function(castbar, unit)
-	local uc = cfg.uninterruptable
+	local uc = {1, 0, 0}
     if unit == "player" then
 		castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
 	else
@@ -359,7 +360,7 @@ end
 local CreateCastbars = function(self, unit)
     local u = unit:match("[^%d]+")
     if multicheck(u, "target", "player", "focus", "boss") then
-        local cb = createStatusbar(self, cfg.texture, "ARTWORK", nil, nil, 0, 0, 0, 0) -- transparent
+        local cb = createStatusbar(self, texture, "ARTWORK", nil, nil, 0, 0, 0, 0) -- transparent
 		cb:SetAllPoints(self)
         cb:SetFrameLevel(1)
 
@@ -367,18 +368,18 @@ local CreateCastbars = function(self, unit)
 		cb.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
         cb.Spark:SetBlendMode("ADD")
         cb.Spark:SetAlpha(1)
-        cb.Spark:SetSize(8, cfg.height*2)
+        cb.Spark:SetSize(8, oUF_MlightDB.height*2)
 
-        cb.Time = createFont(cb, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
+        cb.Time = createFont(cb, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, "OUTLINE", 1, 1, 1)
 		if (unit == "player") then
-			cb.Time:SetFont(cfg.font, cfg.fontsize+2, cfg.fontflag)
+			cb.Time:SetFont(oUF_MlightDB.fontfile, oUF_MlightDB.fontsize+2, "OUTLINE")
 			cb.Time:SetPoint("TOP", cb, "BOTTOM", 0, -10)
 		else
 			cb.Time:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", -3, -3)
 		end
         cb.CustomTimeText = CustomTimeText
 
-        cb.Text = createFont(cb, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
+        cb.Text = createFont(cb, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, "OUTLINE", 1, 1, 1)
 		if u == "boss" then
 			cb.Text:SetPoint("BOTTOMLEFT", 3, -3)
 		else
@@ -386,16 +387,16 @@ local CreateCastbars = function(self, unit)
 		end
 		
         cb.Icon = cb:CreateTexture(nil, "ARTWORK")
-        cb.Icon:SetSize(cfg.cbIconsize, cfg.cbIconsize)
+        cb.Icon:SetSize(oUF_MlightDB.cbIconsize, oUF_MlightDB.cbIconsize)
         cb.Icon:SetTexCoord(.1, .9, .1, .9)
-		cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -cfg.height*(1-cfg.hpheight)-3)
+		cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -oUF_MlightDB.height*(1-oUF_MlightDB.hpheight)-3)
 
 		cb.IBackdrop = createBackdrop(cb, cb.Icon)
 		
 		--safezone for castbar of player
         if (unit == "player") then
             cb.SafeZone = cb:CreateTexture(nil, "OVERLAY")
-            cb.SafeZone:SetTexture(cfg.texture)
+            cb.SafeZone:SetTexture(texture)
             cb.SafeZone:SetVertexColor( .3, .8, 1, .3)
         end
 
@@ -415,21 +416,23 @@ local PostCreateIcon = function(auras, icon)
     icon.count:ClearAllPoints()
     icon.count:SetPoint("BOTTOMRIGHT", 3, -3)
     icon.count:SetFontObject(nil)
-    icon.count:SetFont(cfg.font, 12, cfg.fontflag)
+    icon.count:SetFont(oUF_MlightDB.fontfile, 12, "OUTLINE")
     icon.count:SetTextColor(.9, .9, .1)
 
-	icon.overlay:SetTexture(cfg.texture)
+	icon.overlay:SetTexture(texture)
 	icon.overlay:SetDrawLayer("BACKGROUND")
     icon.overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
     icon.overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
 
 	icon.bd = createBackdrop(icon, icon, 0)
 
-	icon.remaining = createFont(icon, "OVERLAY", cfg.font, 12, "OUTLINE", 1, 1, 1)
+	icon.remaining = createFont(icon, "OVERLAY", oUF_MlightDB.fontfile, 12, "OUTLINE", 1, 1, 1)
     icon.remaining:SetPoint("TOPLEFT", -3, 2)
 
-    if cfg.auraborders then
+    if oUF_MlightDB.auraborders then
         auras.showDebuffType = true
+	else
+		auras.showDebuffType = false
 	end
 end
 
@@ -448,9 +451,9 @@ local CreateAuraTimer = function(self, elapsed)
 end
 
 local PostUpdateIcon = function(icons, unit, icon, index, offset)
-	local name, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
+	local name, _, _, _, _, duration, expirationTime, _, _, _, SpellID = UnitAura(unit, index, icon.filter)
 
-	if icon.isPlayer or UnitIsFriend("player", unit) or not icon.isDebuff then
+	if icon.isPlayer or UnitIsFriend("player", unit) or not icon.isDebuff or oUF_MlightDB.AuraFilterwhitelist[tostring(SpellID)] then
 		icon.icon:SetDesaturated(false)
 		if duration and duration > 0 then
 			icon.remaining:Show()
@@ -459,7 +462,7 @@ local PostUpdateIcon = function(icons, unit, icon, index, offset)
 		end
 		icon.count:Show()
 	else
-		icon.icon:SetDesaturated(true) -- grey other"s debuff casted on enemy.
+		icon.icon:SetDesaturated(true) -- grey other's debuff casted on enemy.
 		icon.overlay:Hide()
 		icon.remaining:Hide()
 		icon.count:Hide()
@@ -479,14 +482,14 @@ local PostUpdateGapIcon = function(auras, unit, icon, visibleBuffs)
 end
 
 local CustomFilter = function(icons, unit, icon, ...)
-	local _, _, _, _, _, _, _, _, _, _, spellID = ...
+	local SpellID = select(11, ...)
 	if icon.isPlayer then -- show all my auras
 		return true
-	elseif UnitIsFriend("player", unit) and (not cfg.AuraFilter.ignoreBuff or icon.isDebuff) then
+	elseif UnitIsFriend("player", unit) and (not oUF_MlightDB.AuraFilterignoreBuff or icon.isDebuff) then
 		return true
-	elseif not UnitIsFriend("player", unit) and (not cfg.AuraFilter.ignoreDebuff or not icon.isDebuff) then
+	elseif not UnitIsFriend("player", unit) and (not oUF_MlightDB.AuraFilterignoreDebuff or not icon.isDebuff) then
 		return true
-	elseif cfg.AuraFilter.whitelist[spellID] then
+	elseif oUF_MlightDB.AuraFilterwhitelist[tostring(SpellID)] then
 		return true
 	end
 end
@@ -501,14 +504,14 @@ local CreateAuras = function(self, unit)
 	local u = unit:match("[^%d]+")
     if multicheck(u, "target", "focus", "boss") then
 		local Auras = CreateFrame("Frame", nil, self)
-		Auras:SetHeight(cfg.height*2)
-		Auras:SetWidth(cfg.width-2)
+		Auras:SetHeight(oUF_MlightDB.height*2)
+		Auras:SetWidth(oUF_MlightDB.width-2)
 		Auras.gap = true
 		Auras.disableCooldown = true
 		if select(2, UnitClass("player")) == "MAGE" then
 			Auras.showStealableBuffs = true 
 		end
-		Auras.size = (cfg.width+3)/cfg.auraperrow-3
+		Auras.size = (oUF_MlightDB.width+3)/oUF_MlightDB.auraperrow-3
 		Auras.spacing = 3
 		Auras.PostCreateIcon = PostCreateIcon
 		Auras.PostUpdateIcon = PostUpdateIcon
@@ -519,9 +522,9 @@ local CreateAuras = function(self, unit)
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"
-			Auras.numDebuffs = cfg.auraperrow
-			Auras.numBuffs = cfg.auraperrow
-			if cfg.AuraFilter.ignoreBuff or cfg.AuraFilter.ignoreDebuff then
+			Auras.numDebuffs = oUF_MlightDB.auraperrow
+			Auras.numBuffs = oUF_MlightDB.auraperrow
+			if unit == "target" and (oUF_MlightDB.AuraFilterignoreBuff or oUF_MlightDB.AuraFilterignoreDebuff) then
 				Auras.CustomFilter = CustomFilter
 			end
 		else -- boss 1-5
@@ -540,25 +543,25 @@ end
 local CreateDebuffs = function(self, unit)
     if unit == "player" or unit == "pet" then
 		local Debuff = CreateFrame("Frame", nil, self)
-		Debuff:SetHeight(cfg.height*2)
-		Debuff:SetWidth(cfg.width-2)
+		Debuff:SetHeight(oUF_MlightDB.height*2)
+		Debuff:SetWidth(oUF_MlightDB.width-2)
 		Debuff.disableCooldown = true
 		Debuff.spacing = 3
 		Debuff.PostCreateIcon = PostCreateIcon
 		Debuff.PostUpdateIcon = PostUpdateIcon
-	    if cfg.playerdebuff.enable and unit == "player" then
+	    if oUF_MlightDB.playerdebuffenable and unit == "player" then
 			Debuff:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 8)
 			Debuff.initialAnchor = "BOTTOMLEFT"
 			Debuff["growth-x"] = "RIGHT"
 			Debuff["growth-y"] = "UP"
-			Debuff.size = (cfg.width+3)/cfg.playerdebuff.num-3
-			Debuff.num = cfg.playerdebuff.num
+			Debuff.size = (oUF_MlightDB.width+3)/oUF_MlightDB.playerdebuffnum-3
+			Debuff.num = oUF_MlightDB.playerdebuffnum
 		elseif unit == "pet" then
 			Debuff:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 5, 0)
 			Debuff.initialAnchor = "BOTTOMLEFT"
 			Debuff["growth-x"] = "RIGHT"
 			Debuff["growth-y"] = "DOWN"
-			Debuff.size = (cfg.width+3)/cfg.auraperrow-3
+			Debuff.size = (oUF_MlightDB.width+3)/oUF_MlightDB.auraperrow-3
 			Debuff.num = 5
 		end
 		self.Debuffs = Debuff
@@ -579,15 +582,15 @@ local func = function(self, unit)
 	-- highlight --
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
     self.hl:SetAllPoints()
-    self.hl:SetTexture(cfg.highlighttexture)
+    self.hl:SetTexture(highlighttexture)
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
 	
 	-- backdrop --
 	self.bg = self:CreateTexture(nil, "BACKGROUND")
     self.bg:SetAllPoints()
-    self.bg:SetTexture(cfg.texture)
-	if cfg.tranparentmode then
+    self.bg:SetTexture(texture)
+	if oUF_MlightDB.transparentmode then
 		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
 	else
 		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
@@ -595,31 +598,31 @@ local func = function(self, unit)
 	
     -- height, width and scale --
 	if multicheck(u, "targettarget", "focustarget", "pet") then
-        self:SetSize(cfg.width1, cfg.height)
+        self:SetSize(oUF_MlightDB.widthpet, oUF_MlightDB.height)
 	elseif u == "boss" then
-		self:SetSize(cfg.width2, cfg.height)
+		self:SetSize(oUF_MlightDB.widthboss, oUF_MlightDB.height)
 	else
-	    self:SetSize(cfg.width, cfg.height)
+	    self:SetSize(oUF_MlightDB.width, oUF_MlightDB.height)
     end
-    self:SetScale(cfg.scale)
+    self:SetScale(oUF_MlightDB.scale)
 	
 	-- shadow border for health bar --
     self.backdrop = createBackdrop(self, self, 0) -- this also use for dispel border
 	
 	-- health bar --
-    local hp = createStatusbar(self, cfg.texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
+    local hp = createStatusbar(self, texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(1)
 	hp:SetAllPoints(self)
     hp.frequentUpdates = true
 
 	-- health text --
 	if not (unit == "targettarget" or unit == "focustarget" or unit == "pet") then
-		hp.value = createFont(hp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
+		hp.value = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, "OUTLINE", 1, 1, 1)
 		hp.value:SetPoint("BOTTOMRIGHT", self, -4, -3)
 	end
 	
 	-- reverse fill health --
-	if cfg.tranparentmode then
+	if oUF_MlightDB.transparentmode then
 		hp:SetReverseFill(true)
 	end
 
@@ -629,7 +632,7 @@ local func = function(self, unit)
 
 	-- power bar --
     if not (unit == "targettarget" or unit == "focustarget") then
-		local pp = createStatusbar(self, cfg.texture, "ARTWORK", cfg.height*-(cfg.hpheight-1), nil, 1, 1, 1, 1)
+		local pp = createStatusbar(self, texture, "ARTWORK", oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1), nil, 1, 1, 1, 1)
 		pp:SetFrameLevel(1)
 		pp:SetPoint"LEFT"
 		pp:SetPoint"RIGHT"
@@ -641,7 +644,7 @@ local func = function(self, unit)
 		
 		-- power text --
 		if not multicheck(u, "pet", "boss") then
-			pp.value = createFont(pp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
+			pp.value = createFont(pp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, "OUTLINE", 1, 1, 1)
 			pp.value:SetPoint("BOTTOMLEFT", self, 4, -3)
 		end
 
@@ -652,12 +655,12 @@ local func = function(self, unit)
 
 	-- altpower bar --
     if multicheck(u, "player", "boss") then
-		local altpp = createStatusbar(self, cfg.texture, "ARTWORK", 2, nil, 1, 1, 1, 1)
+		local altpp = createStatusbar(self, texture, "ARTWORK", 2, nil, 1, 1, 1, 1)
 		altpp:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -3)
 		altpp:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -3)
 		altpp.bd = createBackdrop(altpp, altpp, 1)
 
-		altpp.value = createFont(altpp, "OVERLAY", cfg.font, cfg.fontsize-2, cfg.fontflag, 1, 1, 1)
+		altpp.value = createFont(altpp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize-2, "OUTLINE", 1, 1, 1)
 		altpp.value:SetPoint"CENTER"
 
 		self.AltPowerBar = altpp
@@ -691,40 +694,40 @@ local func = function(self, unit)
     self.RaidIcon = ricon
 	
 	-- name --
-    local name = createFont(self.Health, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
-	name:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT", 3, -3)
+    local name = createFont(self.Health, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, "OUTLINE", 1, 1, 1)
+	name:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 3, 9)
     if unit == "player" or unit == "pet" then
         name:Hide()
 	elseif multicheck(u, "targettarget", "focustarget", "boss") then
-		if cfg.nameclasscolormode then
+		if oUF_MlightDB.nameclasscolormode then
 			self:Tag(name, "[Mlight:color][Mlight:shortname]")
 		else
 			self:Tag(name, "[Mlight:shortname]")
 		end
-    elseif cfg.nameclasscolormode then
+    elseif oUF_MlightDB.nameclasscolormode then
 		self:Tag(name, "[difficulty][level][shortclassification]|r [Mlight:color][name] [status]")
     else
 		self:Tag(name, "[difficulty][level][shortclassification]|r [name] [status]")
     end
     
-    if cfg.castbars then
+    if oUF_MlightDB.castbars then
         CreateCastbars(self, unit)
     end
 	
-	if cfg.auras then
+	if oUF_MlightDB.auras then
 		CreateAuras(self, unit)
 		CreateDebuffs(self, unit)
 	end
 
-    self.FadeMinAlpha = 0
+	self.FadeMinAlpha = oUF_MlightDB.fadingalpha
 	self.FadeInSmooth = 0.4
 	self.FadeOutSmooth = 1.5
-    self.FadeCasting = true
-    self.FadeCombat = true
-    self.FadeTarget = true
-    self.FadeHealth = true
-    self.FadePower = true
-    self.FadeHover = true
+	self.FadeCasting = true
+	self.FadeCombat = true
+	self.FadeTarget = true
+	self.FadeHealth = true
+	self.FadePower = true
+	self.FadeHover = true
 
 end
 
@@ -782,10 +785,10 @@ local UnitSpecific = {
 
             local bars = CreateFrame("Frame", nil, self)
 			bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 3)
-            bars:SetSize(cfg.width, 10)
+            bars:SetSize(oUF_MlightDB.width, 10)
 
             for i = 1, count do
-                bars[i] = createStatusbar(bars, cfg.texture, nil, cfg.height*-(cfg.hpheight-1), (cfg.width+3)/count-3, 1, 1, 1, 1)
+                bars[i] = createStatusbar(bars, texture, nil, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1), (oUF_MlightDB.width+3)/count-3, 1, 1, 1, 1)
 
                 if class == "WARLOCK" or class == "PRIEST" then
                     bars[i]:SetStatusBarColor(unpack(barcolor1[i]))
@@ -828,18 +831,18 @@ local UnitSpecific = {
         if class == "DRUID" then
             local ebar = CreateFrame("Frame", nil, self)
 		    local Ewidth,Eheight
-			Ewidth = cfg.width
-			Eheight = cfg.height*-(cfg.hpheight-1)
+			Ewidth = oUF_MlightDB.width
+			Eheight = oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1)
 
             ebar:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 3)
 			ebar:SetSize(Ewidth, Eheight)
             ebar.bd = createBackdrop(ebar, ebar, 1)
 
-            local lbar = createStatusbar(ebar, cfg.texture, nil, Eheight, Ewidth, .2, .9, 1, 1)
+            local lbar = createStatusbar(ebar, texture, nil, Eheight, Ewidth, .2, .9, 1, 1)
             lbar:SetPoint("LEFT", ebar, "LEFT")
             ebar.LunarBar = lbar
 
-            local sbar = createStatusbar(ebar, cfg.texture, nil, Eheight, Ewidth, 1, 1, 0.15, 1)
+            local sbar = createStatusbar(ebar, texture, nil, Eheight, Ewidth, 1, 1, 0.15, 1)
             sbar:SetPoint("LEFT", lbar:GetStatusBarTexture(), "RIGHT")
             ebar.SolarBar = sbar
 
@@ -855,7 +858,7 @@ local UnitSpecific = {
         end
 		
 		-- resting Zzz and PvP---
-		local playerstatus = createFont(self.Health, "OVERLAY", cfg.font, 10, "OUTLINE", 1, 1, 1)
+		local playerstatus = createFont(self.Health, "OVERLAY", oUF_MlightDB.fontfile, 10, "OUTLINE", 1, 1, 1)
 		playerstatus:SetPoint("CENTER", self.Health, "CENTER",0,-2)
 		self:Tag(playerstatus, "[raidcolor][resting]|r")
 		
@@ -867,18 +870,13 @@ local UnitSpecific = {
     target = function(self, ...)
         func(self, ...)
 			-- threat bar --	
-		if cfg.showthreatbar then
-			local threatbar = createStatusbar(UIParent, cfg.texture, "ARTWORK", nil, nil, 0.25, 0.25, 0.25, 1)
-			if not cfg.tbuserplaced.enable then
-				threatbar:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -3)
-				threatbar:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
-			else
-				threatbar:SetSize(cfg.tbuserplaced.width, cfg.tbuserplaced.height)
-				threatbar:SetPoint(unpack(cfg.tbuserplaced.pos))
-			end
+		if oUF_MlightDB.showthreatbar then
+			local threatbar = createStatusbar(UIParent, texture, "ARTWORK", nil, nil, 0.25, 0.25, 0.25, 1)
+			threatbar:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -3)
+			threatbar:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
 			threatbar.bd = createBackdrop(threatbar, threatbar, 1)
 			self.ThreatBar = threatbar
-			self.ThreatBar.vertical = cfg.tbvergradient
+			self.ThreatBar.vertical = oUF_MlightDB.tbvergradient
 		end
     end,
 
@@ -937,17 +935,28 @@ local spawnHelper = function(self, unit, ...)
     return object
 end
 
-oUF:Factory(function(self)
-    spawnHelper(self, "player",unpack(cfg.playerpos))
-    spawnHelper(self, "pet",unpack(cfg.petpos))
-    spawnHelper(self, "target",unpack(cfg.targetpos))
-    spawnHelper(self, "targettarget",unpack(cfg.totpos))
-    spawnHelper(self, "focus",unpack(cfg.focuspos))
-    spawnHelper(self, "focustarget",unpack(cfg.focustarget))
+local EventFrame = CreateFrame("Frame")
 
-    if cfg.bossframes then
+EventFrame:RegisterEvent("ADDON_LOADED")
+
+EventFrame:SetScript("OnEvent", function(self, event, ...)
+    self[event](self, ...)
+end)
+
+function EventFrame:ADDON_LOADED(arg1)
+	if arg1 ~= "oUF_Mlight" then return end
+	oUF:Factory(function(self)
+    spawnHelper(self, "player","BOTTOM","UIParent","CENTER", 0, -135)
+    spawnHelper(self, "pet","BOTTOMLEFT","UIParent","CENTER", oUF_MlightDB.width/2 +10, -135)
+    spawnHelper(self, "target","TOPLEFT","UIParent","CENTER", 150, -50)
+    spawnHelper(self, "targettarget","TOPLEFT","UIParent","CENTER", 150 +oUF_MlightDB.width +10, -50)
+    spawnHelper(self, "focus","TOPLEFT","UIParent","CENTER", 150, 50)
+    spawnHelper(self, "focustarget","TOPLEFT","UIParent","CENTER", 150 +oUF_MlightDB.width +10, 50)
+
+    if oUF_MlightDB.bossframes then
         for i = 1, MAX_BOSS_FRAMES do		
-			spawnHelper(self,"boss" .. i, cfg.boss1pos[1], cfg.boss1pos[2], cfg.boss1pos[3], cfg.boss1pos[4], cfg.boss1pos[5] - (cfg.bossspace * (i-1)))
+			spawnHelper(self,"boss" .. i, "TOPRIGHT","UIParent","TOPRIGHT", -10, -260-60*i)
         end
     end
-end)
+	end)
+end

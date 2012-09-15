@@ -1,13 +1,9 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+local addon, ns = ...
 
-if not cfg.enableraid then return end
-
-local texture = cfg.texture
-local font, fontflag = cfg.font, cfg.fontflag
-local fontsize = cfg.raidfontsize
+local texture = "Interface\\Buttons\\WHITE8x8"
 local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
 local myclass = select(2, UnitClass("player"))
+local highlighttexture = "Interface\\AddOns\\oUF_Mlight\\media\\highlight"
 
 local createFont = ns.createFont
 local createBackdrop = ns.createBackdrop
@@ -56,10 +52,10 @@ local function healpreditionbar(self, color)
 	local hpb = CreateFrame('StatusBar', nil, self.Health)
 	hpb:SetFrameLevel(2)
 	hpb:SetStatusBarTexture(texture)
-	hpb:SetStatusBarColor(unpack(color))
+	hpb:SetStatusBarColor(color)
 	hpb:SetPoint('TOP')
 	hpb:SetPoint('BOTTOM')
-	if cfg.tranparentmode then
+	if oUF_MlightDB.transparentmode then
 		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
 	else
 		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
@@ -69,8 +65,8 @@ local function healpreditionbar(self, color)
 end
 
 local function CreateHealPredition(self)
-	local myBar = healpreditionbar(self, cfg.healprediction.mycolor)
-	local otherBar = healpreditionbar(self, cfg.healprediction.othercolor)
+	local myBar = healpreditionbar(self, 110/255, 210/255, 0/255, 0.5)
+	local otherBar = healpreditionbar(self, 0/255, 110/255, 0/255, 0.5)
 	self.HealPrediction = {
 		myBar = myBar,
 		otherBar = otherBar,
@@ -98,15 +94,15 @@ local func = function(self, unit)
 	-- highlight --
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
     self.hl:SetAllPoints()
-    self.hl:SetTexture(cfg.highlighttexture)
+    self.hl:SetTexture(highlighttexture)
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
 	
 	-- backdrop --
 	self.bg = self:CreateTexture(nil, "BACKGROUND")
     self.bg:SetAllPoints()
-    self.bg:SetTexture(cfg.texture)
-	if cfg.tranparentmode then
+    self.bg:SetTexture(texture)
+	if oUF_MlightDB.transparentmode then
 		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
 	else
 		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
@@ -124,12 +120,12 @@ local func = function(self, unit)
 	self.threatborder = Createpxborder(self, 0)
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
 	
-    local hp = createStatusbar(self, cfg.texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
+    local hp = createStatusbar(self, texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(2)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
 	
-	if cfg.tranparentmode then
+	if oUF_MlightDB.transparentmode then
 		hp:SetReverseFill(true)
 	end
 	
@@ -137,12 +133,12 @@ local func = function(self, unit)
 	self.Health.PostUpdate = Updatehealthbar
 	
 	-- gcd frane --
-	if cfg.showgcd then
+	if oUF_MlightDB.showgcd then
 		CreateGCDframe(self)
 	end
 	
 	-- heal prediction --
-	if cfg.healprediction.enable then
+	if oUF_MlightDB.healprediction then
 		CreateHealPredition(self)
 	end
 	
@@ -161,13 +157,13 @@ local func = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 
-	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-3, fontflag, 1, 1, 1)
+	local lfd = createFont(hp, "OVERLAY", symbols, oUF_MlightDB.raidfontsize-3, "OUTLINE", 1, 1, 1)
 	lfd:SetPoint("BOTTOM", hp, 0, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 	
-	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1)
+	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, "OUTLINE", 1, 1, 1)
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
-	if cfg.nameclasscolormode then
+	if oUF_MlightDB.nameclasscolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
 	else
 		self:Tag(raidname, '[Mlight:raidname]')
@@ -178,7 +174,7 @@ local func = function(self, unit)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
     self.RaidIcon = ricon
 	
-	local status = createFont(hp, "OVERLAY", font, fontsize-2, fontflag, 1, 1, 1)
+	local status = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize-2, "OUTLINE", 1, 1, 1)
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
 	
@@ -219,7 +215,7 @@ local func = function(self, unit)
         outsideAlpha = 0.5,
     }
 	
-	if cfg.arrow.enable then
+	if oUF_MlightDB.enablearrow then
 		self.freebRange = range
 	else
 		self.Range = range
@@ -235,15 +231,15 @@ local dfunc = function(self, unit)
 	-- highlight --
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
     self.hl:SetAllPoints()
-    self.hl:SetTexture(cfg.highlighttexture)
+    self.hl:SetTexture(highlighttexture)
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
 	
 	-- backdrop --
 	self.bg = self:CreateTexture(nil, "BACKGROUND")
     self.bg:SetAllPoints()
-    self.bg:SetTexture(cfg.texture)
-	if cfg.tranparentmode then
+    self.bg:SetTexture(texture)
+	if oUF_MlightDB.transparentmode then
 		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
 	else
 		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
@@ -252,12 +248,12 @@ local dfunc = function(self, unit)
 	-- border --
 	self.backdrop = createBackdrop(self, self, 0)
 	
-    local hp = createStatusbar(self, cfg.texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
+    local hp = createStatusbar(self, texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(2)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
 	
-	if cfg.tranparentmode then
+	if oUF_MlightDB.transparentmode then
 		hp:SetReverseFill(true)
 	end
 	
@@ -279,13 +275,13 @@ local dfunc = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 	
-	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-3, fontflag, 1, 1, 1)
+	local lfd = createFont(hp, "OVERLAY", symbols, oUF_MlightDB.raidfontsize-3, "OUTLINE", 1, 1, 1)
 	lfd:SetPoint("LEFT", hp, 1, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 		
-	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1, 'RIGHT')
+	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, "OUTLINE", 1, 1, 1, 'RIGHT')
 	raidname:SetPoint"CENTER"
-	if cfg.nameclasscolormode then
+	if oUF_MlightDB.nameclasscolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
 	else
 		self:Tag(raidname, '[Mlight:raidname]')
@@ -296,7 +292,7 @@ local dfunc = function(self, unit)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
     self.RaidIcon = ricon
 	
-	local status = createFont(hp, "OVERLAY", font, fontsize-2, fontflag, 1, 1, 1)
+	local status = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize-2, "OUTLINE", 1, 1, 1)
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
 	
@@ -311,7 +307,7 @@ local dfunc = function(self, unit)
         outsideAlpha = 0.5,
     }
 	
-	if cfg.arrow.enable then
+	if oUF_MlightDB.enablearrow then
 		self.freebRange = range
 	else
 		self.Range = range
@@ -331,27 +327,24 @@ local function Spawnhealraid()
 		self:SetWidth(%d)
 		self:SetHeight(%d)
 		self:SetScale(%d)
-		]]):format(cfg.healerraidwidth, cfg.healerraidheight, 1),
+		]]):format(oUF_MlightDB.healerraidwidth, oUF_MlightDB.healerraidheight, 1),
 		'showPlayer', true,
-		'showSolo', cfg.showsolo,
+		'showSolo', oUF_MlightDB.showsolo,
 		'showParty', true,
 		'showRaid', true,
 		'xOffset', 5,
 		'yOffset', -5,
-		'point', cfg.anchor,
-		'groupFilter', cfg.healergroupfilter,
+		'point', oUF_MlightDB.anchor,
+		'groupFilter', oUF_MlightDB.healergroupfilter,
 		'groupingOrder', '1,2,3,4,5,6,7,8',
 		'groupBy', 'GROUP',
 		'maxColumns', 8,
 		'unitsPerColumn', 5,
 		'columnSpacing', 5,
-		'columnAnchorPoint', cfg.partyanchor
+		'columnAnchorPoint', oUF_MlightDB.partyanchor
 	)
-	healerraid:SetPoint(unpack(cfg.healerraidposition))
+	healerraid:SetPoint('TOPLEFT', 'UIParent','CENTER', 150, -100)
 end
-
-local groupBy = cfg.dpsraidgroupbyclass and "CLASS" or "GROUP"
-local groupingOrder = cfg.dpsraidgroupbyclass and "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID" or "1,2,3,4,5,6,7,8"
 
 local function Spawndpsraid()
 	oUF:SetActiveStyle"Mlight_DPSraid"
@@ -360,23 +353,23 @@ local function Spawndpsraid()
 		self:SetWidth(%d)
 		self:SetHeight(%d)
 		self:SetScale(%d)
-		]]):format(cfg.dpsraidwidth, cfg.dpsraidheight, 1),
+		]]):format(oUF_MlightDB.dpsraidwidth, oUF_MlightDB.dpsraidheight, 1),
 		'showPlayer', true,
-		'showSolo', cfg.showsolo,
+		'showSolo', oUF_MlightDB.showsolo,
 		'showParty', true,
 		'showRaid', true,
 		'xOffset', 5,
 		'yOffset', -5,
 		'point', "TOP",
-		'groupFilter', cfg.dpsgroupfilter,
-		'groupingOrder', groupingOrder,
-		'groupBy', groupBy,
+		'groupFilter', oUF_MlightDB.dpsgroupfilter,
+		'groupingOrder', oUF_MlightDB.dpsraidgroupbyclass and "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID" or "1,2,3,4,5,6,7,8",
+		'groupBy', oUF_MlightDB.dpsraidgroupbyclass and "CLASS" or "GROUP",
 		'maxColumns', 8,
-		'unitsPerColumn', cfg.unitnumperline,
+		'unitsPerColumn', oUF_MlightDB.unitnumperline,
 		'columnSpacing', 5,
 		'columnAnchorPoint', "LEFT"
 	)
-	dpsraid:SetPoint(unpack(cfg.dpsraidposition))
+	dpsraid:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 20, -180)
 end
 
 local function CheckRole()
@@ -389,13 +382,13 @@ local function CheckRole()
 end
 
 local function hiderf(f)
-	if cfg.showsolo and f:GetAttribute("showSolo") then f:SetAttribute("showSolo", false) end
+	if oUF_MlightDB.showsolo and f:GetAttribute("showSolo") then f:SetAttribute("showSolo", false) end
 	if f:GetAttribute("showParty") then f:SetAttribute("showParty", false) end
 	if f:GetAttribute("showRaid") then f:SetAttribute("showRaid", false) end
 end
 
 local function showrf(f)
-	if cfg.showsolo and not f:GetAttribute("showSolo") then f:SetAttribute("showSolo", true) end
+	if oUF_MlightDB.showsolo and not f:GetAttribute("showSolo") then f:SetAttribute("showSolo", true) end
 	if not f:GetAttribute("showParty") then f:SetAttribute("showParty", true) end
 	if not f:GetAttribute("showRaid") then f:SetAttribute("showRaid", true) end
 end
@@ -422,17 +415,18 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
 end)
 
 function EventFrame:ADDON_LOADED(arg1)
-	if arg1 ~= "oUF_Mlight" then return end
+	if arg1 ~= "oUF_Mlight" or not oUF_MlightDB.enableraid then return end
 	Spawnhealraid()
 	Spawndpsraid()
 end
 
 function EventFrame:PLAYER_TALENT_UPDATE()
-	if not cfg.switch.auto then
-		if cfg.switch.onlyhealer then
+	if oUF_MlightDB == nil or not oUF_MlightDB.enableraid then return end
+	if oUF_MlightDB.autoswitch then
+		if oUF_MlightDB.raidonlyhealer then
 			hiderf(dpsraid)
 			showrf(healerraid)
-		elseif cfg.switch.onlydps then
+		elseif oUF_MlightDB.raidonlydps then
 			hiderf(healerraid)
 			showrf(dpsraid)
 		else
@@ -445,6 +439,7 @@ function EventFrame:PLAYER_TALENT_UPDATE()
 end
 
 function EventFrame:PLAYER_ENTERING_WORLD()
+	if oUF_MlightDB == nil or not oUF_MlightDB.enableraid then return end
 	CompactRaidFrameManager:Hide()
 	CompactRaidFrameManager:UnregisterAllEvents()
 	CompactRaidFrameContainer:Hide()
