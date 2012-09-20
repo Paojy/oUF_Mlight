@@ -50,7 +50,7 @@ end
 
 local function healpreditionbar(self, ...)
 	local hpb = CreateFrame('StatusBar', nil, self.Health)
-	hpb:SetFrameLevel(2)
+	hpb:SetFrameLevel(3)
 	hpb:SetStatusBarTexture(texture)
 	hpb:SetStatusBarColor(...)
 	hpb:SetPoint('TOP')
@@ -79,7 +79,7 @@ local function CreateGCDframe(self)
     Gcd:SetAllPoints(self)
     Gcd:SetStatusBarTexture(texture)
     Gcd:SetStatusBarColor(1, 1, 1, .4)
-    Gcd:SetFrameLevel(4)
+    Gcd:SetFrameLevel(5)
     self.GCD = Gcd
 end
 --=============================================--
@@ -112,18 +112,29 @@ local func = function(self, unit)
 	self.backdrop = createBackdrop(self, self, 0)
 	
 	-- target border --
-	self.targetborder = Createpxborder(self, 1)
+	self.targetborder = Createpxborder(self, 2)
 	self.targetborder:SetBackdropBorderColor(1, 1, .4)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
 
 	-- threat border --
-	self.threatborder = Createpxborder(self, 0)
+	self.threatborder = Createpxborder(self, 1)
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
 	
     local hp = createStatusbar(self, texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
-	hp:SetFrameLevel(2)
+	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
+	
+	-- little black line to make the health bar more clear
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+    hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
+	hp.ind:SetVertexColor(0, 0, 0)
+	hp.ind:SetSize(1, self:GetHeight())
+	if oUF_MlightDB.transparentmode then
+		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+	else
+		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+	end
 	
 	if oUF_MlightDB.transparentmode then
 		hp:SetReverseFill(true)
@@ -191,7 +202,7 @@ local func = function(self, unit)
    
 	-- Raid debuff
     local auras = CreateFrame("Frame", nil, self)
-	auras:SetFrameLevel(3)
+	auras:SetFrameLevel(4)
     auras:SetSize(16, 16)
     auras:SetPoint("LEFT", hp, "LEFT", 15, 0)
 	auras.tfontsize = 10
@@ -200,7 +211,7 @@ local func = function(self, unit)
 	
 	-- Tankbuff
     local tankbuff = CreateFrame("Frame", nil, self)
-	tankbuff:SetFrameLevel(3)
+	tankbuff:SetFrameLevel(4)
     tankbuff:SetSize(16, 16)
     tankbuff:SetPoint("LEFT", auras, "RIGHT", 5, 0)
 	tankbuff.tfontsize = 10
@@ -250,9 +261,20 @@ local dfunc = function(self, unit)
 	self.backdrop = createBackdrop(self, self, 0)
 	
     local hp = createStatusbar(self, texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
-	hp:SetFrameLevel(2)
+	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
+	
+	-- little black line to make the health bar more clear
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+    hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
+	hp.ind:SetVertexColor(0, 0, 0)
+	hp.ind:SetSize(1, self:GetHeight())
+	if oUF_MlightDB.transparentmode then
+		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+	else
+		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+	end
 	
 	if oUF_MlightDB.transparentmode then
 		hp:SetReverseFill(true)
