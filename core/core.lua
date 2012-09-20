@@ -217,6 +217,7 @@ local Updatehealthbar = function(self, unit, min, max)
 
 	self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
 	
+	
 	if oUF_MlightDB.transparentmode then
 		self:SetValue(max - self:GetValue()) 
 	end
@@ -362,7 +363,7 @@ local CreateCastbars = function(self, unit)
     if multicheck(u, "target", "player", "focus", "boss") then
         local cb = createStatusbar(self, texture, "ARTWORK", nil, nil, 0, 0, 0, 0) -- transparent
 		cb:SetAllPoints(self)
-        cb:SetFrameLevel(1)
+        cb:SetFrameLevel(2)
 
         cb.Spark = cb:CreateTexture(nil, "OVERLAY")
 		cb.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
@@ -611,29 +612,54 @@ local func = function(self, unit)
 	
 	-- health bar --
     local hp = createStatusbar(self, texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
-	hp:SetFrameLevel(1)
+	hp:SetFrameLevel(2)
 	hp:SetAllPoints(self)
     hp.frequentUpdates = true
-
+	
 	-- health text --
 	if not (unit == "targettarget" or unit == "focustarget" or unit == "pet") then
 		hp.value = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, 1, 1, 1)
 		hp.value:SetPoint("BOTTOMRIGHT", self, -4, -3)
 	end
 	
+	-- little black line to make the health bar more clear
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+    hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
+	hp.ind:SetVertexColor(0, 0, 0)
+	hp.ind:SetSize(1, self:GetHeight())
+	if oUF_MlightDB.transparentmode then
+		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+	else
+		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+	end
+	
 	-- reverse fill health --
 	if oUF_MlightDB.transparentmode then
 		hp:SetReverseFill(true)
 	end
-
+	
     self.Health = hp
 	self.Health.PostUpdate = Updatehealthbar
 	tinsert(self.mouseovers, self.Health)
-
+	
+	-- portrait --
+	if oUF_MlightDB.portrait and multicheck(u, "player", "target", "focus", "boss") then
+		local Portrait = CreateFrame('PlayerModel', nil, self)
+		if oUF_MlightDB.transparentmode then
+			Portrait:SetFrameLevel(1) -- below hp
+		else
+			Portrait:SetFrameLevel(2) -- over hp
+		end
+		Portrait:SetPoint("TOPLEFT", 1, 0)
+		Portrait:SetPoint("BOTTOMRIGHT", -1, 1)
+		Portrait:SetAlpha(oUF_MlightDB.portraitalpha)
+		self.Portrait = Portrait
+	end
+	
 	-- power bar --
     if not (unit == "targettarget" or unit == "focustarget") then
 		local pp = createStatusbar(self, texture, "ARTWORK", oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1), nil, 1, 1, 1, 1)
-		pp:SetFrameLevel(1)
+		pp:SetFrameLevel(2)
 		pp:SetPoint"LEFT"
 		pp:SetPoint"RIGHT"
 		pp:SetPoint("TOP", self, "BOTTOM", 0, -3)
@@ -859,8 +885,8 @@ local UnitSpecific = {
         end
 		
 		-- resting Zzz and PvP---
-		local playerstatus = createFont(self.Health, "OVERLAY", oUF_MlightDB.fontfile, 10, 1, 1, 1)
-		playerstatus:SetPoint("CENTER", self.Health, "CENTER",0,-2)
+		local playerstatus = createFont(self.Health, "ARTWORK", oUF_MlightDB.fontfile, 10, 1, 1, 1)
+		playerstatus:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 2, 5)
 		self:Tag(playerstatus, "[raidcolor][resting]|r")
 		
     end,
