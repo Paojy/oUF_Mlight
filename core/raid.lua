@@ -103,9 +103,9 @@ local func = function(self, unit)
     self.bg:SetAllPoints()
     self.bg:SetTexture(texture)
 	if oUF_MlightDB.transparentmode then
-		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, oUF_MlightDB.endcolor.a, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, oUF_MlightDB.startcolor.a)
 	else
-		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, 1, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, 1)
 	end
 	
 	-- border --
@@ -157,11 +157,11 @@ local func = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 
-	local lfd = createFont(hp, "OVERLAY", symbols, oUF_MlightDB.raidfontsize-3, "OUTLINE", 1, 1, 1)
+	local lfd = createFont(hp, "OVERLAY", symbols, oUF_MlightDB.raidfontsize-3, 1, 1, 1)
 	lfd:SetPoint("BOTTOM", hp, 0, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 	
-	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, "OUTLINE", 1, 1, 1)
+	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, 1, 1, 1)
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
 	if oUF_MlightDB.nameclasscolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
@@ -175,7 +175,7 @@ local func = function(self, unit)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
     self.RaidIcon = ricon
 	
-	local status = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize-2, "OUTLINE", 1, 1, 1)
+	local status = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize-2, 1, 1, 1)
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
 	
@@ -241,9 +241,9 @@ local dfunc = function(self, unit)
     self.bg:SetAllPoints()
     self.bg:SetTexture(texture)
 	if oUF_MlightDB.transparentmode then
-		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, oUF_MlightDB.endcolor.a, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, oUF_MlightDB.startcolor.a)
 	else
-		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, 1, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, 1)
 	end
 	
 	-- border --
@@ -276,11 +276,11 @@ local dfunc = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 	
-	local lfd = createFont(hp, "OVERLAY", symbols, oUF_MlightDB.raidfontsize-3, "OUTLINE", 1, 1, 1)
+	local lfd = createFont(hp, "OVERLAY", symbols, oUF_MlightDB.raidfontsize-3, 1, 1, 1)
 	lfd:SetPoint("LEFT", hp, 1, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 		
-	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, "OUTLINE", 1, 1, 1, 'RIGHT')
+	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, 1, 1, 1, 'RIGHT')
 	raidname:SetPoint"CENTER"
 	if oUF_MlightDB.nameclasscolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
@@ -294,7 +294,7 @@ local dfunc = function(self, unit)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
     self.RaidIcon = ricon
 	
-	local status = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize-2, "OUTLINE", 1, 1, 1)
+	local status = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize-2, 1, 1, 1)
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
 	

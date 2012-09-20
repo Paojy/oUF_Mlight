@@ -91,9 +91,9 @@ local createStatusbar = function(parent, tex, layer, height, width, r, g, b, alp
 end
 ns.createStatusbar = createStatusbar
 
-local createFont = function(parent, layer, f, fs, outline, r, g, b, justify)
+local createFont = function(parent, layer, f, fs, r, g, b, justify)
     local string = parent:CreateFontString(nil, layer)
-    string:SetFont(f, fs, outline)
+    string:SetFont(f, fs, oUF_MlightDB.fontflag)
     string:SetShadowOffset(0, 0)
     string:SetTextColor(r, g, b)
     if justify then
@@ -370,16 +370,16 @@ local CreateCastbars = function(self, unit)
         cb.Spark:SetAlpha(1)
         cb.Spark:SetSize(8, oUF_MlightDB.height*2)
 
-        cb.Time = createFont(cb, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, "OUTLINE", 1, 1, 1)
+        cb.Time = createFont(cb, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, 1, 1, 1)
 		if (unit == "player") then
-			cb.Time:SetFont(oUF_MlightDB.fontfile, oUF_MlightDB.fontsize+2, "OUTLINE")
+			cb.Time:SetFont(oUF_MlightDB.fontfile, oUF_MlightDB.fontsize+2, oUF_MlightDB.fontflag)
 			cb.Time:SetPoint("TOP", cb, "BOTTOM", 0, -10)
 		else
 			cb.Time:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", -3, -3)
 		end
         cb.CustomTimeText = CustomTimeText
 
-        cb.Text = createFont(cb, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, "OUTLINE", 1, 1, 1)
+        cb.Text = createFont(cb, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, 1, 1, 1)
 		if u == "boss" then
 			cb.Text:SetPoint("BOTTOMLEFT", 3, -3)
 		else
@@ -416,7 +416,7 @@ local PostCreateIcon = function(auras, icon)
     icon.count:ClearAllPoints()
     icon.count:SetPoint("BOTTOMRIGHT", 3, -3)
     icon.count:SetFontObject(nil)
-    icon.count:SetFont(oUF_MlightDB.fontfile, 12, "OUTLINE")
+    icon.count:SetFont(oUF_MlightDB.fontfile, 12, oUF_MlightDB.fontflag)
     icon.count:SetTextColor(.9, .9, .1)
 
 	icon.overlay:SetTexture(texture)
@@ -426,7 +426,7 @@ local PostCreateIcon = function(auras, icon)
 
 	icon.bd = createBackdrop(icon, icon, 0)
 
-	icon.remaining = createFont(icon, "OVERLAY", oUF_MlightDB.fontfile, 12, "OUTLINE", 1, 1, 1)
+	icon.remaining = createFont(icon, "OVERLAY", oUF_MlightDB.fontfile, 12, 1, 1, 1)
     icon.remaining:SetPoint("TOPLEFT", -3, 2)
 
     if oUF_MlightDB.auraborders then
@@ -591,9 +591,9 @@ local func = function(self, unit)
     self.bg:SetAllPoints()
     self.bg:SetTexture(texture)
 	if oUF_MlightDB.transparentmode then
-		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, oUF_MlightDB.endcolor.a, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, oUF_MlightDB.startcolor.a)
 	else
-		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, 1, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, 1)
 	end
 	
     -- height, width and scale --
@@ -617,7 +617,7 @@ local func = function(self, unit)
 
 	-- health text --
 	if not (unit == "targettarget" or unit == "focustarget" or unit == "pet") then
-		hp.value = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, "OUTLINE", 1, 1, 1)
+		hp.value = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, 1, 1, 1)
 		hp.value:SetPoint("BOTTOMRIGHT", self, -4, -3)
 	end
 	
@@ -644,7 +644,7 @@ local func = function(self, unit)
 		
 		-- power text --
 		if not multicheck(u, "pet", "boss") then
-			pp.value = createFont(pp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, "OUTLINE", 1, 1, 1)
+			pp.value = createFont(pp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, 1, 1, 1)
 			pp.value:SetPoint("BOTTOMLEFT", self, 4, -3)
 		end
 
@@ -660,7 +660,7 @@ local func = function(self, unit)
 		altpp:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -3)
 		altpp.bd = createBackdrop(altpp, altpp, 1)
 
-		altpp.value = createFont(altpp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize-2, "OUTLINE", 1, 1, 1)
+		altpp.value = createFont(altpp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize-2, 1, 1, 1)
 		altpp.value:SetPoint"CENTER"
 
 		self.AltPowerBar = altpp
@@ -694,7 +694,7 @@ local func = function(self, unit)
     self.RaidIcon = ricon
 	
 	-- name --
-    local name = createFont(self.Health, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, "OUTLINE", 1, 1, 1)
+    local name = createFont(self.Health, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, 1, 1, 1)
 	name:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 3, 9)
     if unit == "player" or unit == "pet" then
         name:Hide()
@@ -859,7 +859,7 @@ local UnitSpecific = {
         end
 		
 		-- resting Zzz and PvP---
-		local playerstatus = createFont(self.Health, "OVERLAY", oUF_MlightDB.fontfile, 10, "OUTLINE", 1, 1, 1)
+		local playerstatus = createFont(self.Health, "OVERLAY", oUF_MlightDB.fontfile, 10, 1, 1, 1)
 		playerstatus:SetPoint("CENTER", self.Health, "CENTER",0,-2)
 		self:Tag(playerstatus, "[raidcolor][resting]|r")
 		
