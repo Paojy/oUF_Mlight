@@ -316,6 +316,7 @@ for i = 1, 5  do
 	for _, modifier in ipairs(modifiers) do
 		db[tostring(i)][modifier] = {}
 		db[tostring(i)][modifier]["action"] = "NONE"
+		db[tostring(i)][modifier]["macro"] = ""
 	end
 end
 
@@ -323,9 +324,9 @@ for k, _ in pairs(classClickdb) do
 	for j, _ in pairs(classClickdb[k]) do
 		local var = classClickdb[k][j]["action"]
 		local spellname = GetSpellInfo(var)
-		if (var == "target" or var == "menu" or var == "follow") then
+		if (var == "target" or var == "tot" or var == "follow" or var == "macro") then
 			db[k][j]["action"] = var
-		elseif spellname then						
+		elseif spellname then
 			db[k][j]["action"] = spellname
 		end
 	end
@@ -364,7 +365,14 @@ local default_Settings = {
 	-- castbar
 	castbars = true,
 	cbIconsize = 32,
-
+	independentcb = false,
+	cbheight = 8,
+	cbwidth = 300,
+	cbx = 0,
+	cby = -200,
+	channelticks = true,
+	tickcolor = {r = 0, g = 0, b = 0, a = 1},
+	
 	-- auras
 	auras = true,
 	auraborders = true,
