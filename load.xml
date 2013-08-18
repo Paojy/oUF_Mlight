@@ -20,6 +20,8 @@
 	<Script file="embeds\range.lua"/>
 	<Script file="embeds\warlockspecbars.lua"/>
 	<Script file="embeds\arcanecharge.lua"/>
+	<Script file="embeds\trinket.lua"/>
+	<Script file="embeds\pvpspec.lua"/>
 	
 	<Script file="core\core.lua"/>
 	<Script file="core\raid.lua"/>
