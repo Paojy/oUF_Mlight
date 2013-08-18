@@ -1,4 +1,4 @@
-local addon, ns = ...
+﻿local addon, ns = ...
 
 local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
 local texture = "Interface\\Buttons\\WHITE8x8"
@@ -121,50 +121,8 @@ local createFont = function(parent, layer, f, fs, r, g, b, justify)
 end
 ns.createFont = createFont
 --=============================================--
---[[    Dropdown menu and MouseOn update     ]]--
+--[[              MouseOn update             ]]--
 --=============================================--
-local dropdown = CreateFrame("Frame", addon .. "DropDown", UIParent, "UIDropDownMenuTemplate")
-
-local menu = function(self)
-    dropdown:SetParent(self)
-    return ToggleDropDownMenu(1, nil, dropdown, "cursor", 0, 0)
-end
-
-local init = function(self)
-    local unit = self:GetParent().unit
-    local menu, name, id
-
-    if(not unit) then
-        return
-    end
-
-    if(UnitIsUnit(unit, "player")) then
-        menu = "SELF"
-    elseif(UnitIsUnit(unit, "vehicle")) then
-        menu = "VEHICLE"
-    elseif(UnitIsUnit(unit, "pet")) then
-        menu = "PET"
-    elseif(UnitIsPlayer(unit)) then
-        id = UnitInRaid(unit)
-        if(id) then
-            menu = "RAID_PLAYER"
-            name = GetRaidRosterInfo(id)
-        elseif(UnitInParty(unit)) then
-            menu = "PARTY"
-        else
-            menu = "PLAYER"
-        end
-    else
-        menu = "TARGET"
-        name = RAID_TARGET_ICON
-    end
-
-    if(menu) then
-        UnitPopup_ShowMenu(self, menu, unit, name, id)
-    end
-end
-UIDropDownMenu_Initialize(dropdown, init, "MENU")
-
 local OnMouseOver = function(self)
     local OnEnter = function(self)
 		UnitFrame_OnEnter(self)
@@ -344,11 +302,69 @@ local CombatPostUpdate = function(self, inCombat)
 		self.__owner.Resting:Show()
 	end
 end
+
+function UpdatePrep()
+    local numOpps = GetNumArenaOpponentSpecs()
+    if numOpps > 0 then
+        for i=1, 5 do
+            if not _G["oUF_MlightArena"..i] then return end
+            local s = GetArenaOpponentSpec(i)
+            local _, spec, class, texture = nil, "UNKNOWN", "UNKNOWN", "INTERFACE\\ICONS\\INV_MISC_QUESTIONMARK"
+				
+            if s and s > 0 then
+                _, spec, _, texture, _, _, class = GetSpecializationInfoByID(s)
+            end
+
+            if (i <= numOpps) then
+                if class and spec then
+                    local color = oUF.colors.class[class]
+					--print("职业"..class.."颜色"..color.r.."  "..color.g.."  "..color.b)
+                    _G["oUF_MlightArena"..i].prepFrame.SpecClass:SetText(spec.."  -  "..LOCALIZED_CLASS_NAMES_MALE[class])
+                    _G["oUF_MlightArena"..i].prepFrame.Health:SetStatusBarColor(color.r, color.g, color.b)
+                    _G["oUF_MlightArena"..i].prepFrame.Icon:SetTexture(texture)
+                    _G["oUF_MlightArena"..i].prepFrame:Show()
+                end
+            else
+                _G["oUF_MlightArena"..i].prepFrame:Hide()
+            end
+        end
+    else
+        for i=1, 5 do
+            if not _G["oUF_MlightArena"..i] then return end
+            _G["oUF_MlightArena"..i].prepFrame:Hide()
+        end
+    end
+end
 --=============================================--
 --[[                 Castbars                ]]--
 --=============================================--
+local uc = {1, 0, 0}
+
+local ChannelSpells = {
+	[GetSpellInfo(129197)] = 3, --精神鞭笞（乱）
+	[GetSpellInfo(124468)] = 3, --精神鞭笞
+	[GetSpellInfo(32000)] = 5, --精神灼烧
+	[GetSpellInfo(47540)] = 2, --苦修（第一跳立即生效）
+	[GetSpellInfo(64843)] = 4, --神圣赞美诗
+	[GetSpellInfo(64901)] = 4, --希望圣歌
+	
+	[GetSpellInfo(10)] = 8, --暴风雪
+	[GetSpellInfo(5143)] = 5, --奥术飞弹
+	[GetSpellInfo(12051)] = 3, --唤醒（第一跳立即生效）
+
+	[GetSpellInfo(1120)] = 6, --吸取灵魂
+	[GetSpellInfo(689)] = 6, --吸取生命
+	[GetSpellInfo(108371)] = 6, --生命收割
+	[GetSpellInfo(4629)] = 6, --火焰之雨
+	[GetSpellInfo(1949)] = 14, --地狱烈焰（第一跳立即生效）
+	[GetSpellInfo(755)] = 6, --生命通道
+	[GetSpellInfo(103103)] = 4, --灾难之握
+	
+	[GetSpellInfo(740)] = 4, --宁静
+	[GetSpellInfo(16914)] = 10, --飓风
+}
+
 local PostCastStart = function(castbar, unit)
-	local uc = {1, 0, 0}
     if unit == "player" then
 		castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
 	else
@@ -360,6 +376,80 @@ local PostCastStart = function(castbar, unit)
     end
 end
 
+local PostChannelStart = function(castbar, unit, spell)
+    if unit == "player" then
+		castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+	else
+		if castbar.interrupt then
+		    castbar.IBackdrop:SetBackdropBorderColor(uc[1], uc[2], uc[3])
+        else
+            castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+        end
+    end
+	
+	if oUF_MlightDB["channelticks"] then
+		if unit == "player" and ChannelSpells[spell] then
+			if #castbar.Ticks ~= 0 then
+				for i = 1, #castbar.Ticks do
+					castbar.Ticks[i]:Hide()
+				end
+			end
+			castbar.tick = ChannelSpells[spell]
+			for i = 1, (castbar.tick-1) do
+				if not castbar.Ticks[i] then
+					castbar.Ticks[i] = castbar:CreateTexture(nil, "OVERLAY")
+					castbar.Ticks[i]:SetTexture(oUF_MlightDB.tickcolor.r, oUF_MlightDB.tickcolor.g, oUF_MlightDB.tickcolor.b, oUF_MlightDB.tickcolor.a)
+					castbar.Ticks[i]:SetSize(2, castbar.height)
+				else
+					castbar.Ticks[i]:Show()
+				end
+				castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", -castbar.width/castbar.tick*i, 0)
+			end
+			--print("start")
+		end
+	end
+end
+
+local PostChannelUpdate = function(castbar, unit, spell)
+	if oUF_MlightDB["channelticks"] then
+		if unit == "player" and ChannelSpells[spell] then
+			if #castbar.Ticks ~= 0 then
+				for i = 1, #castbar.Ticks do
+					castbar.Ticks[i]:Hide()
+				end
+			end
+			castbar.tick = ChannelSpells[spell] + 1
+			for i = 1, (castbar.tick-1) do
+				if not castbar.Ticks[i] then
+					castbar.Ticks[i] = castbar:CreateTexture(nil, "OVERLAY")
+					castbar.Ticks[i]:SetTexture(oUF_MlightDB.tickcolor.r, oUF_MlightDB.tickcolor.g, oUF_MlightDB.tickcolor.b, oUF_MlightDB.tickcolor.a)
+					castbar.Ticks[i]:SetSize(2, castbar.height)
+				else
+					castbar.Ticks[i]:Show()
+				end
+				if i == 1 then
+					castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", castbar.width*castbar.delay/castbar.max, 0)
+				else
+					castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", castbar.width*(castbar.delay/castbar.max-(1+castbar.delay/castbar.max)/(castbar.tick-1)*(i-1)), 0)
+				end
+			end
+			--print("update")
+		end
+	end
+end
+
+local PostChannelStop = function(castbar, unit, spell)
+	if oUF_MlightDB["channelticks"] then
+		if unit == "player" then
+			if #castbar.Ticks ~= 0 then
+				for i = 1, #castbar.Ticks do
+					castbar.Ticks[i]:Hide()
+				end
+			end
+		end
+	end
+end
+
 local CustomTimeText = function(castbar, duration)
     if castbar.casting then
         castbar.Time:SetFormattedText("|cff97FFFF%.1f/%.1f|r", duration, castbar.max)
@@ -368,13 +458,26 @@ local CustomTimeText = function(castbar, duration)
     end
 end
 
+local CustomDelayText = function(castbar, duration)
+    if castbar.casting then
+        castbar.Time:SetFormattedText("|cff97FFFF%.1f/%.1f|r|cff8A8A8A(%.1f)|r", duration, castbar.max, -castbar.delay)
+    elseif castbar.channeling then
+        castbar.Time:SetFormattedText("|cff97FFFF%.1f/%.1f|r|cff8A8A8A(%.1f)|r", castbar.max - duration, castbar.max, -castbar.delay)
+    end
+end
+
 local CreateCastbars = function(self, unit)
     local u = unit:match("[^%d]+")
     if multicheck(u, "target", "player", "focus", "boss") then
-        local cb = createStatusbar(self, texture, "ARTWORK", nil, nil, 0, 0, 0, 0) -- transparent
+		local cb = CreateFrame("StatusBar", "oUF_Mlight_Castbar", self)
+		cb:SetStatusBarTexture(texture)
+		cb:SetStatusBarColor(0, 0, 0, 0)
 		cb:SetAllPoints(self)
-        cb:SetFrameLevel(2)
+		cb:SetFrameLevel(2)
 
+		cb.height = oUF_MlightDB["height"]
+		cb.width = oUF_MlightDB["width"]
+			
         cb.Spark = cb:CreateTexture(nil, "OVERLAY")
 		cb.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
         cb.Spark:SetBlendMode("ADD")
@@ -389,6 +492,7 @@ local CreateCastbars = function(self, unit)
 			cb.Time:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", -3, -3)
 		end
         cb.CustomTimeText = CustomTimeText
+		cb.CustomDelayText = CustomDelayText
 
         cb.Text = createFont(cb, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, 1, 1, 1)
 		if u == "boss" then
@@ -404,16 +508,39 @@ local CreateCastbars = function(self, unit)
 
 		cb.IBackdrop = createBackdrop(cb, cb.Icon)
 		
-		--safezone for castbar of player
-        if (unit == "player") then
+		if unit == "player" then
             cb.SafeZone = cb:CreateTexture(nil, "OVERLAY")
             cb.SafeZone:SetTexture(texture)
-            cb.SafeZone:SetVertexColor( .3, .8, 1, .3)
+            cb.SafeZone:SetVertexColor( 1, 1, 1, .5)
+			
+			if oUF_MlightDB["independentcb"] then
+				cb:ClearAllPoints()
+				cb:SetSize(oUF_MlightDB["cbwidth"], oUF_MlightDB["cbheight"])
+				cb:SetPoint("CENTER", UIParent, "CENTER", oUF_MlightDB["cbx"], oUF_MlightDB["cby"])
+				
+				cb:SetStatusBarColor( .35, .65, 1, 1)
+				cb.bd = createBackdrop(cb, cb, 1)
+				cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, 0)
+				cb.Spark:SetSize(8, oUF_MlightDB["cbheight"]*2)
+				
+				cb.Time:ClearAllPoints()
+				cb.Time:SetPoint("TOP", cb, "BOTTOM", 0, -3)
+				
+				cb.Text:ClearAllPoints()
+				cb.Text:SetPoint("BOTTOMLEFT", cb, "TOPLEFT", 0, 3)
+				cb.Text:SetJustifyH("LEFT")
+				
+				cb.height = oUF_MlightDB["cbheight"]
+				cb.width = oUF_MlightDB["cbwidth"]				
+			end
         end
-
+		
+		cb.Ticks = {}
         cb.PostCastStart = PostCastStart
-        cb.PostChannelStart = PostCastStart
-
+        cb.PostChannelStart = PostChannelStart
+		cb.PostChannelUpdate = PostChannelUpdate
+		cb.PostChannelStop = PostChannelStop
+		
         self.Castbar = cb
     end
 end
@@ -462,7 +589,7 @@ local CreateAuraTimer = function(self, elapsed)
 end
 
 local whitelist = {
-	["123059"] = true, -- ��ҡ��־
+	["123059"] = true, -- 动摇意志
 }
 
 local PostUpdateIcon = function(icons, unit, icon, index, offset)
@@ -604,7 +731,6 @@ local func = function(self, unit)
 	OnMouseOver(self)
     self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
-	self.menu = menu
 	
 	-- highlight --
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
@@ -742,7 +868,7 @@ local func = function(self, unit)
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY")
     ricon:SetPoint("CENTER", hp, "CENTER", 0, 0)
-    ricon:SetSize(16, 16)
+    ricon:SetSize(20, 20)
     self.RaidIcon = ricon
 	
 	-- name --
@@ -964,6 +1090,38 @@ local UnitSpecific = {
     --========================--
     arena = function(self, ...)
         func(self, ...)
+		
+		if not self.prepFrame then
+            self.prepFrame = CreateFrame("Frame", self:GetName().."PrepFrame", UIParent)
+            self.prepFrame:SetFrameStrata("BACKGROUND")
+            self.prepFrame:SetAllPoints(self)
+			self.prepFrame.Health = createStatusbar(self.prepFrame, texture, "MEDIUM", nil, nil, 1, 1, 1, 1)
+			self.prepFrame.Health:SetAllPoints(self.prepFrame)
+			self.prepFrame.Health.bd = createBackdrop(self.prepFrame.Health, self.prepFrame.Health, 0) 
+
+			self.prepFrame.Icon = self.prepFrame:CreateTexture(nil, "OVERLAY")
+			self.prepFrame.Icon:SetPoint("LEFT", self.prepFrame, "RIGHT", 5, 0)	
+			self.prepFrame.Icon:SetSize(oUF_MlightDB.height, oUF_MlightDB.height)
+            self.prepFrame.Icon:SetTexCoord(.08, .92, .08, .92)
+			self.prepFrame.Icon.bd = createBackdrop(self.prepFrame, self.prepFrame.Icon, 0) 			
+
+            self.prepFrame.SpecClass = createFont(self.prepFrame.Health, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, 1, 1, 1)
+            self.prepFrame.SpecClass:SetPoint("CENTER")
+        end
+
+        local specIcon = CreateFrame("Frame", nil, self)
+		specIcon:SetSize(oUF_MlightDB.height, oUF_MlightDB.height)
+		specIcon:SetPoint("LEFT", self, "RIGHT", 5, 0)
+		specIcon.bd = createBackdrop(specIcon, specIcon, 0)
+        self.PVPSpecIcon = specIcon
+
+		local trinkets = CreateFrame("Frame", nil, self)
+		trinkets:SetSize(oUF_MlightDB.height, oUF_MlightDB.height)
+		trinkets:SetPoint("LEFT", specIcon, "RIGHT", 5, 0)
+		trinkets.bd = createBackdrop(trinkets, trinkets, 0)
+        trinkets.trinketUseAnnounce = true
+        trinkets.trinketUpAnnounce = true
+        self.Trinket = trinkets
     end,
 }
 
@@ -999,24 +1157,44 @@ end)
 function EventFrame:ADDON_LOADED(arg1)
 	if arg1 ~= "oUF_Mlight" then return end
 	oUF:Factory(function(self)
-    spawnHelper(self, "player","BOTTOM","UIParent","CENTER", 0, -135)
-    spawnHelper(self, "pet","BOTTOMLEFT","UIParent","CENTER", oUF_MlightDB.width/2 +10, -135)
-    spawnHelper(self, "target","TOPLEFT","UIParent","CENTER", 150, -50)
-    spawnHelper(self, "targettarget","TOPLEFT","UIParent","CENTER", 150 +oUF_MlightDB.width +10, -50)
-    spawnHelper(self, "focus","TOPLEFT","UIParent","CENTER", 150, 50)
-    spawnHelper(self, "focustarget","TOPLEFT","UIParent","CENTER", 150 +oUF_MlightDB.width +10, 50)
+		spawnHelper(self, "player","BOTTOM","UIParent","CENTER", 0, -135)
+		spawnHelper(self, "pet","BOTTOMLEFT","UIParent","CENTER", oUF_MlightDB.width/2 +10, -135)
+		spawnHelper(self, "target","TOPLEFT","UIParent","CENTER", 150, -50)
+		spawnHelper(self, "targettarget","TOPLEFT","UIParent","CENTER", 150 +oUF_MlightDB.width +10, -50)
+		spawnHelper(self, "focus","TOPLEFT","UIParent","CENTER", 150, 50)
+		spawnHelper(self, "focustarget","TOPLEFT","UIParent","CENTER", 150 +oUF_MlightDB.width +10, 50)
 
-    if oUF_MlightDB.bossframes then
-        for i = 1, MAX_BOSS_FRAMES do		
-			spawnHelper(self,"boss" .. i, "TOPRIGHT","UIParent","TOPRIGHT", -10, -260-60*i)
-        end
-    end
-	if oUF_MlightDB.arenaframs then
-		for i = 1, 5 do
-			spawnHelper(self,"arena" .. i, "TOPRIGHT","UIParent","TOPRIGHT", -10, -260-60*i)
+		if oUF_MlightDB.bossframes then
+			for i = 1, MAX_BOSS_FRAMES do		
+				spawnHelper(self,"boss" .. i, "TOPRIGHT","UIParent","TOPRIGHT", -10, -260-60*i)
+			end
 		end
-	end
+		
+		if oUF_MlightDB.arenaframs then
+			for i = 1, 5 do
+				spawnHelper(self,"arena" .. i, "TOPRIGHT","UIParent","TOPRIGHT", -80, -260-60*i)
+			end
+		end
 	end)
+	
+	EventFrame:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+	EventFrame:RegisterEvent("ARENA_OPPONENT_UPDATE")
+	EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+end
+
+function EventFrame:ARENA_OPPONENT_UPDATE()
+	for i=1, 5 do
+        if not _G["oUF_MlightArena"..i] then return end
+        _G["oUF_MlightArena"..i].prepFrame:Hide()
+    end
+end
+
+function EventFrame:ARENA_PREP_OPPONENT_SPECIALIZATIONS()
+	UpdatePrep()
+end
+
+function EventFrame:PLAYER_ENTERING_WORLD()
+	UpdatePrep()
 end
 
 PetCastingBarFrame:Hide()
