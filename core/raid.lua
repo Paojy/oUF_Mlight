@@ -51,7 +51,7 @@ end
 
 local function healpreditionbar(self, ...)
 	local hpb = CreateFrame('StatusBar', nil, self.Health)
-	hpb:SetFrameLevel(3)
+	hpb:SetFrameLevel(4)
 	hpb:SetStatusBarTexture(texture)
 	hpb:SetStatusBarColor(...)
 	hpb:SetPoint('TOP')
@@ -66,12 +66,15 @@ local function healpreditionbar(self, ...)
 end
 
 local function CreateHealPredition(self)
-	local myBar = healpreditionbar(self, 110/255, 210/255, 0/255, 0.5)
-	local otherBar = healpreditionbar(self, 0/255, 110/255, 0/255, 0.5)
+	local myBar = healpreditionbar(self, 110/255, 210/255, 0/255, .5)
+	local otherBar = healpreditionbar(self, 0/255, 110/255, 0/255, .5)
+	local absorbBar = healpreditionbar(self, 50/255, 255/255, 255/255, .7)
+	
 	self.HealPrediction = {
 		myBar = myBar,
 		otherBar = otherBar,
-		maxOverflow = 1,
+		absorbBar = absorbBar,
+		maxOverflow = 1.2,
 	}
 end
 
@@ -115,14 +118,18 @@ local function RegisterClicks(object)
 		for	key, _ in pairs(C[id]) do
 			key_tmp = string.gsub(key, "Click", "")
 			action = C[id][key]["action"]
+			macro = C[id][key]["macro"]
 			if action == "follow" then
 				object:SetAttribute(key_tmp.."type"..id, "macro")
 				object:SetAttribute(key_tmp.."macrotext"..id, "/follow mouseover")
 			elseif	action == "tot" then		
 				object:SetAttribute(key_tmp.."type"..id, "macro")
 				object:SetAttribute(key_tmp.."macrotext"..id, "/target mouseovertarget")
-			elseif	action == "target" then		
+			elseif	action == "target" then
 				object:SetAttribute(key_tmp.."type"..id, "target")
+			elseif action == "macro" then
+				object:SetAttribute(key_tmp.."type"..id, "macro")
+				object:SetAttribute(key_tmp.."macrotext"..id, macro)
 			else				
 				object:SetAttribute(key_tmp.."type"..id, "spell")
 				object:SetAttribute(key_tmp.."spell"..id, action)
