@@ -189,10 +189,10 @@ local function createcolorpickerbu(parent, index, name, value, tip)
 	cpb:SetPoint("TOPLEFT", 16, 10-index*30)
 	cpb:SetSize(150, 20)
 	
-	cpb.tex = cpb:CreateTexture(nil, "OVERLAY")
-	cpb.tex:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-	cpb.tex:SetPoint"CENTER"
-	cpb.tex:SetSize(120, 12)
+	cpb.colortexture = cpb:CreateTexture(nil, "OVERLAY")
+	cpb.colortexture:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
+	cpb.colortexture:SetPoint"CENTER"
+	cpb.colortexture:SetSize(120, 12)
 
 	cpb.name = cpb:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	cpb.name:SetPoint("LEFT", cpb, "RIGHT", 10, 1)
@@ -201,17 +201,18 @@ local function createcolorpickerbu(parent, index, name, value, tip)
 	F.Reskin(cpb)
 	
 	cpb:SetScript("OnShow", function(self)
-		self.tex:SetVertexColor(oUF_MlightDB[self.value].r, oUF_MlightDB[self.value].g, oUF_MlightDB[self.value].b)	
+		self.colortexture:SetVertexColor(oUF_MlightDB[self.value].r, oUF_MlightDB[self.value].g, oUF_MlightDB[self.value].b)	
 	end)
 	
 	cpb:SetScript("OnClick", function(self)
 		local r, g, b, a = oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b, oUF_MlightDB[value].a
+		ColorPickerFrame:ClearAllPoints()
 		ColorPickerFrame:SetPoint("TOPLEFT", self, "TOPRIGHT", 20, 0)
 		
 		ColorPickerFrame.hasOpacity = oUF_MlightDB.transparentmode -- Opacity slider only available for reverse filling
 		ColorPickerFrame.func = function() 
 			oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b = ColorPickerFrame:GetColorRGB()
-			self.tex:SetVertexColor(ColorPickerFrame:GetColorRGB())
+			self.colortexture:SetVertexColor(ColorPickerFrame:GetColorRGB())
 		end
 		ColorPickerFrame.opacityFunc = function()
 			oUF_MlightDB[value].a = OpacitySliderFrame:GetValue()
@@ -220,7 +221,7 @@ local function createcolorpickerbu(parent, index, name, value, tip)
 		ColorPickerFrame.opacity = oUF_MlightDB[value].a
 		ColorPickerFrame.cancelFunc = function()
 			oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b, oUF_MlightDB[value].a = r, g, b, a
-			self.tex:SetVertexColor(oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b)
+			self.colortexture:SetVertexColor(oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b)
 		end
 		ColorPickerFrame:SetColorRGB(r, g, b)
 		ColorPickerFrame:Hide()
@@ -374,47 +375,56 @@ castbartext:SetPoint("TOPLEFT", 16, 3-27*30)
 castbartext:SetText(L["castbar"])
 
 local castbarsbu = createcheckbutton(scrollFrame.Anchor, 28, L["enablecastbars"], "castbars", L["enablecastbars2"])
-local cbIconsizebox = createeditbox(scrollFrame.Anchor, 29, L["cbIconsize"], "cbIconsize", L["cbIconsize2"])
-createDR(castbarsbu, cbIconsizebox)
+local cbIconsizebox = createslider(scrollFrame.Anchor, 29, L["cbIconsize"], "cbIconsize", 1, 10, 50, 1)
+local independentcbbu = createcheckbutton(scrollFrame.Anchor, 30, L["Independent Player Castbar"], "independentcb")
+local cbheightslider = createslider(scrollFrame.Anchor, 31, L["cbheight"],  "cbheight", 1, 5, 30, 1)
+local cbwidthslider = createslider(scrollFrame.Anchor, 32, L["cbwidth"],  "cbwidth", 1, 50, 500, 5)
+local cbxslider = createslider(scrollFrame.Anchor, 33, L["xoffset"],  "cbx", 1, -500, 500, 5)
+local cbyslider = createslider(scrollFrame.Anchor, 34, L["yoffset"],  "cby", 1, -500, 500, 5)
+createDR(independentcbbu, cbheightslider, cbwidthslider, cbxslider, cbyslider)
+local channelticksbu = createcheckbutton(scrollFrame.Anchor, 35, L["Show every tick in a channel spell"],  "channelticks")
+local tickscolorpicker = createcolorpickerbu(scrollFrame.Anchor, 36, L["tickcolor"], "tickcolor")
+createDR(channelticksbu, tickscolorpicker)
+createDR(castbarsbu, cbIconsizebox, independentcbbu, cbheightslider, cbwidthslider, cbxslider, cbyslider, channelticksbu, tickscolorpicker)
 
 local auratext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-auratext:SetPoint("TOPLEFT", 16, 3-30*30)
+auratext:SetPoint("TOPLEFT", 16, 3-37*30)
 auratext:SetText(L["aura"])
 
-local aurasbu = createcheckbutton(scrollFrame.Anchor, 31, L["enableauras"], "auras", L["enableauras2"])
-local aurabordersbu = createcheckbutton(scrollFrame.Anchor, 32, L["auraborders"], "auraborders", L["auraborders2"])
-local auraperrowslider = createslider(scrollFrame.Anchor, 33, L["aurasperrow"], "auraperrow", 1, 4, 20, 1, L["aurasperrow2"])
-local playerdebuffbu = createcheckbutton(scrollFrame.Anchor, 34, L["enableplayerdebuff"], "playerdebuffenable", L["enableplayerdebuff2"])
-local playerdebuffperrowslider = createslider(scrollFrame.Anchor, 35, L["playerdebuffsperrow"], "playerdebuffnum", 1, 4, 20, 1, L["playerdebuffsperrow2"])
-local AuraFilterignoreBuffbu = createcheckbutton(scrollFrame.Anchor, 36, L["AuraFilterignoreBuff"], "AuraFilterignoreBuff", L["AuraFilterignoreBuff2"])
-local AuraFilterignoreDebuffbu = createcheckbutton(scrollFrame.Anchor, 37, L["AuraFilterignoreDebuff"], "AuraFilterignoreDebuff", L["AuraFilterignoreDebuff2"])
+local aurasbu = createcheckbutton(scrollFrame.Anchor, 38, L["enableauras"], "auras", L["enableauras2"])
+local aurabordersbu = createcheckbutton(scrollFrame.Anchor, 39, L["auraborders"], "auraborders", L["auraborders2"])
+local auraperrowslider = createslider(scrollFrame.Anchor, 40, L["aurasperrow"], "auraperrow", 1, 4, 20, 1, L["aurasperrow2"])
+local playerdebuffbu = createcheckbutton(scrollFrame.Anchor, 41, L["enableplayerdebuff"], "playerdebuffenable", L["enableplayerdebuff2"])
+local playerdebuffperrowslider = createslider(scrollFrame.Anchor, 42, L["playerdebuffsperrow"], "playerdebuffnum", 1, 4, 20, 1, L["playerdebuffsperrow2"])
+local AuraFilterignoreBuffbu = createcheckbutton(scrollFrame.Anchor, 43, L["AuraFilterignoreBuff"], "AuraFilterignoreBuff", L["AuraFilterignoreBuff2"])
+local AuraFilterignoreDebuffbu = createcheckbutton(scrollFrame.Anchor, 44, L["AuraFilterignoreDebuff"], "AuraFilterignoreDebuff", L["AuraFilterignoreDebuff2"])
 local AuraFiltertext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-AuraFiltertext:SetPoint("TOPLEFT", 16, 3-38*30)
+AuraFiltertext:SetPoint("TOPLEFT", 16, 3-45*30)
 AuraFiltertext:SetText(L["aurafilterinfo"])
 createDR(aurasbu, auraperrowslider, aurabordersbu, playerdebuffbu, playerdebuffperrowslider, AuraFilterignoreBuffbu, AuraFilterignoreDebuffbu)
 createDR(playerdebuffbu, playerdebuffperrowslider)
 
 local threatbartext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-threatbartext:SetPoint("TOPLEFT", 16, 3-39*30)
+threatbartext:SetPoint("TOPLEFT", 16, 3-46*30)
 threatbartext:SetText(L["threatbar"])
 
-local showthreatbarbu = createcheckbutton(scrollFrame.Anchor, 40, L["showthreatbar"], "showthreatbar", L["showthreatbar2"])
-local tbvergradientbu = createcheckbutton(scrollFrame.Anchor, 41, L["tbvergradient"], "tbvergradient", L["tbvergradient2"])
+local showthreatbarbu = createcheckbutton(scrollFrame.Anchor, 47, L["showthreatbar"], "showthreatbar", L["showthreatbar2"])
+local tbvergradientbu = createcheckbutton(scrollFrame.Anchor, 48, L["tbvergradient"], "tbvergradient", L["tbvergradient2"])
 createDR(showthreatbarbu, tbvergradientbu)
 
-local pvpiconbu = createcheckbutton(scrollFrame.Anchor, 42, L["pvpicon"], "pvpicon", L["pvpicon2"])
+local pvpiconbu = createcheckbutton(scrollFrame.Anchor, 49, L["pvpicon"], "pvpicon", L["pvpicon2"])
 
 local bosstext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-bosstext:SetPoint("TOPLEFT", 16, 3-43*30)
+bosstext:SetPoint("TOPLEFT", 16, 3-50*30)
 bosstext:SetText(L["bossframe"])
 
-local bossframesbu = createcheckbutton(scrollFrame.Anchor, 44, L["bossframes"], "bossframes", L["bossframes2"])
+local bossframesbu = createcheckbutton(scrollFrame.Anchor, 51, L["bossframes"], "bossframes", L["bossframes2"])
 
 local arenatext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-arenatext:SetPoint("TOPLEFT", 16, 3-45*30)
+arenatext:SetPoint("TOPLEFT", 16, 3-52*30)
 arenatext:SetText(L["arenaframe"])
 
-local arenaframesbu = createcheckbutton(scrollFrame.Anchor, 46, L["arenaframes"], "arenaframes", L["arenaframes2"])
+local arenaframesbu = createcheckbutton(scrollFrame.Anchor, 53, L["arenaframes"], "arenaframes", L["arenaframes2"])
 --====================================================--
 --[[                 -- Raid --                     ]]--
 --====================================================--
@@ -662,7 +672,7 @@ scrollFrame4.Anchor:SetHeight(scrollFrame4:GetHeight()+200)
 scrollFrame4.Anchor:SetFrameLevel(scrollFrame4:GetFrameLevel()+1)
 scrollFrame4:SetScrollChild(scrollFrame4.Anchor)
 F.ReskinScroll(_G["oUF_Mlight ClickCast Frame_ScrollFrameScrollBar"])
-	
+
 local mouse_buttons = {
 	["1"] = {"Click", "shift-", "ctrl-", "alt-"},
 	["2"] = {"Click", "shift-", "ctrl-", "alt-"},
@@ -670,6 +680,40 @@ local mouse_buttons = {
 	["4"] = {"Click", "shift-", "ctrl-", "alt-"},
 	["5"] = {"Click", "shift-", "ctrl-", "alt-"},
 }
+
+StaticPopupDialogs["oUF_Mlight incorrect spell"] = {
+	text = L["incorrect spell name"],
+	button1 = ACCEPT, 
+	hideOnEscape = 1, 
+	whileDead = true,
+	preferredIndex = 3,
+}
+
+StaticPopupDialogs["oUF_Mlight give macro"] = {
+	text = L["enter a macro"],
+	button1 = ACCEPT, 
+	button2 = CANCEL,
+	hasEditBox = 1,
+	hideOnEscape = 1, 
+	whileDead = true,
+	preferredIndex = 3,
+}
+
+local selectid, selectv1
+StaticPopupDialogs["oUF_Mlight give macro"].OnAccept = function(self)
+	local m = _G[self:GetName().."EditBox"]:GetText()
+	oUF_MlightDB.ClickCast[selectid][selectv1]["macro"] = m
+end
+
+StaticPopupDialogs["oUF_Mlight give macro"].OnShow = function(self)
+	_G[self:GetName().."EditBox"]:SetAutoFocus(true)
+	if not oUF_MlightDB.ClickCast[selectid][selectv1]["macro"] or oUF_MlightDB.ClickCast[selectid][selectv1]["macro"] == "" then
+		_G[self:GetName().."EditBox"]:SetText(L["enter a macro"])
+		_G[self:GetName().."EditBox"]:HighlightText()
+	else
+		_G[self:GetName().."EditBox"]:SetText(oUF_MlightDB.ClickCast[selectid][selectv1]["macro"])
+	end
+end
 
 for id, v in pairs(mouse_buttons) do
 	local mousebutton = scrollFrame4.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
@@ -692,7 +736,23 @@ for id, v in pairs(mouse_buttons) do
 		
 		inputbox:SetScript("OnShow", function(self) self:SetText(oUF_MlightDB.ClickCast[id][v1]["action"]) end)
 		inputbox:SetScript("OnEscapePressed", function(self) self:SetText(oUF_MlightDB.ClickCast[id][v1]["action"]) self:ClearFocus() end)
-		inputbox:SetScript("OnEnterPressed", function(self) self:ClearFocus() oUF_MlightDB.ClickCast[id][v1]["action"] = self:GetText()end)
+		inputbox:SetScript("OnEnterPressed", function(self)
+			local var = self:GetText()
+				if (var == "target" or var == "tot" or var == "follow" or var == "macro") then
+					oUF_MlightDB.ClickCast[id][v1]["action"] = var
+					if var == "macro" then
+						selectid, selectv1 = id, v1
+						StaticPopup_Show("oUF_Mlight give macro")
+					end
+				elseif GetSpellInfo(var) or var == "NONE" then -- 法术已学会
+					oUF_MlightDB.ClickCast[id][v1]["action"] = var
+				else
+					StaticPopupDialogs["oUF_Mlight incorrect spell"].text = "法术名称不正确: "..var
+					StaticPopup_Show("oUF_Mlight incorrect spell")
+					self:SetText(oUF_MlightDB.ClickCast[id][v1]["action"])
+				end
+			self:ClearFocus()
+		end)
 		
 		createDR(enableClickCastbu, inputbox)
 	end
