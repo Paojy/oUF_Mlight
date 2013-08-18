@@ -67,49 +67,182 @@ ns.auras = {
 		[930] = { 
 			-- Throne of Thunder -- 水月大大万岁 ~\(≧▽≦)/~
 			--Trash
-			[GetSpellInfo(138349)] = 7, -- Static Wound
-			[GetSpellInfo(137371)] = 7, -- Thundering Throw
+			-- Horridon
+			-- Stormbringer Draz'kil
+			[GetSpellInfo(139900)] = 7, --Stormcloud
+			-- Tormented Spirit
+			[GetSpellInfo(139550)]  = 7,--Torment
+			-- Horridon & Council of Elders
+			-- Ancient Python
+			[GetSpellInfo(139888)]  = 7,--Ancient Venom
+			-- Tortos
+			-- Greater Cave Bat
+			[GetSpellInfo(136751)] = 7, --Sonic Screech
+			[GetSpellInfo(136753)] = 7, --Slashing Talons
+			-- Magaera
+			-- Mist Lurker
+			[GetSpellInfo(140686)] = 7, --Corrosive Breath
+			[GetSpellInfo(140682)] = 7, --Chokin Mists
+			-- Shale Spider
+			[GetSpellInfo(140616)] = 7, --Shale Shards
+			-- Dark Animus
+			-- Archritualist Kelada
+			[GetSpellInfo(139356)]  = 7,--Extermination Beam
+			
+			-- Jin'rokh the Breaker
+			[GetSpellInfo(138006)] = 7, --Electrified Waters
+			[GetSpellInfo(138732)] = 7, --Ionization
+			[GetSpellInfo(138349)] = 7, --Static Wound
+			[GetSpellInfo(137371)] = 7, --Thundering Throw
+			[GetSpellInfo(137399)] = 7, --Focused Lightning
+			[GetSpellInfo(138733)] = 7, --Ionization
 
 			--Horridon
 			[GetSpellInfo(136767)] = 7, --Triple Puncture
+			[GetSpellInfo(136708)] = 7, --Stone Gaze
+			[GetSpellInfo(136719)] = 7, --Blazing Sunlight
+			[GetSpellInfo(136654)] = 7, --Rending Charge
+			[GetSpellInfo(136587)] = 7, --Venom Bolt Volley
+			[GetSpellInfo(136512)] = 7, --Hex of Confusion
+			[GetSpellInfo(140946)] = 7, --Dire Fixation
+			[GetSpellInfo(136769)] = 7, --Charge
+			[GetSpellInfo(136723)] = 7, --Sand Trap
+			[GetSpellInfo(136710)] = 7, --Deadly Plague (disease)
+			[GetSpellInfo(136670)] = 7, --Mortal Strike
+			[GetSpellInfo(136573)] = 7, --Frozen Bolt (DebuffId used by frozen orb)
 
 			--Council of Elders
 			[GetSpellInfo(137641)] = 7, --Soul Fragment
 			[GetSpellInfo(137359)] = 7, --Shadowed Loa Spirit Fixate
 			[GetSpellInfo(137972)] = 7, --Twisted Fate
+			[GetSpellInfo(137650)] = 7, --Shadowed Soul
+			[GetSpellInfo(137085)] = 7, --Chilled to the Bone
+			[GetSpellInfo(136922)] = 7, --Frostbite
+			[GetSpellInfo(136917)] = 7, --Biting Cold
+			[GetSpellInfo(136903)] = 7, --Frigid Assault
+			[GetSpellInfo(136857)] = 7, --Entrapped
+			[GetSpellInfo(137891)] = 7, --Twisted Fate
+			[GetSpellInfo(137084)] = 7, --Body Heat
+			[GetSpellInfo(136878)] = 7, --Ensnared
+			[GetSpellInfo(136860)] = 7, --Quicksand
 
 			--Tortos
 			[GetSpellInfo(136753)] = 7, --Slashing Talons
-			[GetSpellInfo(137633)] = 7, --Crystal Shell
+			[GetSpellInfo(137633)] = 7, --Crystal Shell 晶化甲壳
+			[GetSpellInfo(140701)] = 8, --Kick Shell
+			[GetSpellInfo(134920)] = 7, --Quake Stomp
+			[GetSpellInfo(136751)] = 7, --Sonic Screech
 
 			--Megaera
 			[GetSpellInfo(137731)] = 7, --Ignite Flesh
+			[GetSpellInfo(139822)] = 7, --Cinders
+			[GetSpellInfo(139866)] = 7, --Torrent of Ice
+			[GetSpellInfo(139841)] = 7, --Arctic Freeze
+			[GetSpellInfo(134378)] = 7, --Acid Rain
+			[GetSpellInfo(139839)] = 7, --Rot Armor
+			[GetSpellInfo(140179)] = 7, --Suppression
+			[GetSpellInfo(139994)] = 7, --Diffusion
+			[GetSpellInfo(134396)] = 7, --Consuming Flames (Dispell)
+			[GetSpellInfo(136892)] = 7, --Frozen Solid
+			[GetSpellInfo(139909)] = 7, --Icy Ground
+			[GetSpellInfo(137746)] = 7, --Consuming Magic
+			[GetSpellInfo(139843)] = 7, --Artic Freeze
+			[GetSpellInfo(139840)] = 7, --Rot Armor
 
 			--Ji-Kun
 			[GetSpellInfo(138309)] = 7, --Slimed
-
+			[GetSpellInfo(140092)] = 7, --Infected Talons
+			[GetSpellInfo(134256)] = 7, --Slimed
+			[GetSpellInfo(138319)] = 7, --Feed Pool
+			[GetSpellInfo(134366)] = 7, --Talon Rake
+			[GetSpellInfo(140014)] = 7, --Daedelian Wings
+			[GetSpellInfo(140571)] = 7, --Feed Pool
+			[GetSpellInfo(134372)] = 7, --Screech
+			
 			--Durumu the Forgotten
 			[GetSpellInfo(133767)] = 7, --Serious Wound
 			[GetSpellInfo(133768)] = 7, --Arterial Cut
-
+			[GetSpellInfo(134755)] = 7, --Eye Sore
+			[GetSpellInfo(136413)] = 7, --Force of Will
+			[GetSpellInfo(133795)] = 7, --Life Drain
+			[GetSpellInfo(133597)] = 7, --Dark Parasite
+			[GetSpellInfo(133598)] = 7, --Dark Plague
+			[GetSpellInfo(134007)] = 7, --Devour
+			[GetSpellInfo(136932)] = 7, --Force of Will
+			[GetSpellInfo(134122)] = 7, --Blue Beam
+			[GetSpellInfo(134123)] = 7, --Red Beam
+			[GetSpellInfo(134124)] = 7, --Yellow Beam
+			[GetSpellInfo(133732)] = 7, --Infrared Light (the stacking red debuff)
+			[GetSpellInfo(133677)] = 7, --Blue Rays (the stacking blue debuff)  
+			[GetSpellInfo(133738)] = 7, --Bright Light (the stacking yellow debuff)
+			[GetSpellInfo(133737)] = 7, --Bright Light (The one that says you are actually in a beam)
+			[GetSpellInfo(133675)] = 7, --Blue Rays (The one that says you are actually in a beam)
+			[GetSpellInfo(134626)] = 7, --Lingering Gaze
+			
 			--Primordius
 			[GetSpellInfo(136050)] = 7, --Malformed Blood
-
+			[GetSpellInfo(140546)] = 7, --Fully Mutated
+			[GetSpellInfo(137000)] = 7, --Black Blood
+			[GetSpellInfo(136180)] = 7, --Keen Eyesight (Helpful)
+			[GetSpellInfo(136181)] = 7, --Impared Eyesight (Harmful)
+			[GetSpellInfo(136182)] = 7, --Improved Synapses (Helpful)
+			[GetSpellInfo(136183)] = 7, --Dulled Synapses (Harmful)
+			[GetSpellInfo(136184)] = 7, --Thick Bones (Helpful)
+			[GetSpellInfo(136185)] = 7, --Fragile Bones (Harmful)
+			[GetSpellInfo(136186)] = 7, --Clear Mind (Helpful)
+			[GetSpellInfo(136187)] = 7, --Clouded Mind (Harmful)
+			[GetSpellInfo(136228)] = 7, --Volatile Pathogen
+			
 			--Dark Animus
 			[GetSpellInfo(138569)] = 7, --Explosive Slam
+			[GetSpellInfo(138609)] = 7, --Matter Swap
+			[GetSpellInfo(138659)] = 7, --Touch of the Animus
+			[GetSpellInfo(136954)] = 7, --Anima Ring
+			[GetSpellInfo(138691)] = 7, --Anima Font
+			[GetSpellInfo(136962)] = 7, --Anima Ring
+			[GetSpellInfo(138480)] = 7, --Crimson Wake Fixate
 
 			--Iron Qon
 			[GetSpellInfo(134691)] = 7, --Impale
 			[GetSpellInfo(134647)] = 7, --Scorched
-
+			[GetSpellInfo(136193)] = 7, --Arcing Lightning
+			[GetSpellInfo(135145)] = 7, --Freeze
+			[GetSpellInfo(135147)] = 7, --Dead Zone
+			[GetSpellInfo(136520)] = 7, --Frozen Blood
+			[GetSpellInfo(137669)] = 7, --Storm Cloud
+			[GetSpellInfo(137668)] = 7, --Burning Cinders
+			[GetSpellInfo(137654)] = 7, --Rushing Winds 
+			[GetSpellInfo(136577)] = 7, --Wind Storm
+			[GetSpellInfo(136192)] = 7, --Lightning Storm
+			[GetSpellInfo(136615)] = 7, --Electrified
+			
 			--Twin Consorts
 			[GetSpellInfo(137440)] = 7, --Icy Shadows
 			[GetSpellInfo(137408)] = 7, --Fan of Flames
 			[GetSpellInfo(137360)] = 7, --Corrupted Healing
-
+			[GetSpellInfo(137341)] = 7, --Beast of Nightmares
+			[GetSpellInfo(137417)] = 7,--Flames of Passion
+			[GetSpellInfo(138306)] = 7, --Serpent's Vitality
+			[GetSpellInfo(137375)] = 7,--Beast of Nightmares
+			[GetSpellInfo(136722)] = 7,--Slumber Spores
+			
 			--Lei Shen
 			[GetSpellInfo(135000)] = 7, --Decapitate
-
+			[GetSpellInfo(134916)] = 7, --Decapitate
+			[GetSpellInfo(135150)] = 7, --Crashing Thunder
+			[GetSpellInfo(139011)] = 7, --Helm of Command
+			[GetSpellInfo(136478)] = 7, --Fusion Slash
+			[GetSpellInfo(136853)] = 7, --Lightning Bolt
+			[GetSpellInfo(135695)] = 7, --Static Shock
+			[GetSpellInfo(136295)] = 7, --Overcharged
+			[GetSpellInfo(136543)] = 7, --Ball Lightning
+			[GetSpellInfo(134821)] = 7, --Discharged Energy
+			[GetSpellInfo(136326)] = 7, --Overcharge
+			[GetSpellInfo(137176)] = 7, --Overloaded Circuits
+			[GetSpellInfo(135153)] = 7, --Crashing Thunder
+			[GetSpellInfo(136914)] = 7, --Electrical Shock
+			[GetSpellInfo(135001)] = 7, --Maim
+			
 			--Ra-den
 
 		},
